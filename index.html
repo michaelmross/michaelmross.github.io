@@ -29,7 +29,6 @@
             color: #333; 
             margin: 0;
             padding: 0;
-            /* Background Image Properties */
             background-image: url('me.jpg');
             background-size: cover;
             background-position: center;
@@ -37,25 +36,65 @@
             background-repeat: no-repeat;
         }
 
-        /* Container to keep text readable over the image */
         .main-container {
             max-width: 800px; 
             margin: 40px auto; 
             padding: 30px;
-            background: rgba(255, 255, 255, 0.92); /* White with slight transparency */
+            background: rgba(255, 255, 255, 0.92);
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
         h1 { border-bottom: 2px solid #467886; padding-bottom: 10px; color: #2c3e50; }
         h2 { font-size: 1.2rem; margin-bottom: 5px; }
-        .pub-item { margin-bottom: 30px; list-style: none; padding-left: 0; }
+        .pub-item { margin-bottom: 22px; list-style: none; padding-left: 0; }
         .links { margin-top: 5px; font-size: 0.9rem; }
         a { color: #467886; text-decoration: none; font-weight: bold; }
         a:hover { text-decoration: underline; }
         .meta-links { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 10px; }
         .repo-links { background: #ffffff; padding: 10px 15px; border: 1px solid #eee; border-radius: 8px; margin-bottom: 40px; font-size: 0.9rem; }
         .file-link { color: #666; font-weight: normal; margin-left: 15px; }
+
+        .program-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-top: 45px;
+            margin-bottom: 4px;
+            padding-top: 20px;
+            border-top: 1px solid #ccc;
+        }
+        .program-blurb {
+            font-style: italic;
+            color: #666;
+            margin-top: 0;
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+        }
+        .category-label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #467886;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-top: 25px;
+            margin-bottom: 12px;
+        }
+        .role {
+            font-size: 0.9rem;
+            color: #555;
+            font-style: italic;
+            margin: 4px 0 6px 0;
+        }
+        .featured {
+            background: #f4f8f9;
+            padding: 16px 18px;
+            border-left: 4px solid #467886;
+            border-radius: 4px;
+            margin-bottom: 22px;
+        }
+        .featured h2 { color: #2c3e50; }
+        ul.section-list { padding-left: 0; margin-top: 0; }
     </style>
 </head>
 <body>
@@ -75,80 +114,37 @@
 
         <div class="repo-links">
             <strong>GitHub Repositories:</strong> 
-            <a href="https://github.com/michaelmross/goldbach-primorials">goldbach-primorials</a> | 
+             | 
             <a href="https://github.com/michaelmross/Legendre">Legendre</a> |
             <a href="https://github.com/michaelmross/Collatz">Collatz</a> | 
-            <a href="https://github.com/michaelmross/tasktracker">TaskTracker</a>
+			<a href="https://github.com/michaelmross/goldbach-primorials">goldbach-primorials</a> |
+			<a href="https://github.com/michaelmross/tasktracker">TaskTracker</a>
         </div>
 
-        <ul style="padding-left: 0;">
+        <!-- ================================================== -->
+        <!-- PROGRAM 1: J_n ANALYTIC PROGRAM                    -->
+        <!-- ================================================== -->
 
-            <li class="pub-item">
-                <h2>Factor Rays and the Self-Conjugate Parabola: Deterministic Coverage Geometry in Square Intervals</h2>
-                <div class="links">
-                    <a href="https://doi.org/10.5281/zenodo.20016399">View on Zenodo</a>
-                    <a href="https://zenodo.org/records/20016399/files/Factor_Rays_and_the_Self_Conjugate_Parabola.pdf" class="file-link">[Download PDF]</a>
-                </div>
-            </li>
-            
-            <li class="pub-item">
-                <h2>Primes in Structured √x-Intervals and Density-One Quadratic Persistence</h2>
-                <div class="links">
-                    <a href="https://doi.org/10.5281/zenodo.19716353">View on Zenodo</a>
-                    <a href="https://zenodo.org/records/19716353/files/Primes_in_Structured_Intervals_and_Density_One_Quadratic_Persistence.pdf" class="file-link">[Download PDF]</a>
-                </div>
-            </li>
+        <div class="program-title">The J<sub>n</sub> Analytic Program</div>
+        <div class="program-blurb">Primes in the quadratic interval J<sub>n</sub> = [4n<sup>2</sup> &minus; n,&nbsp;4n<sup>2</sup> + n] and the Legendre conjecture.</div>
 
-                <li class="pub-item">
-                <h2>Semiprimes 2p and 3p in Quadratic Intervals: A Legendre-Class Persistence Problem</h2>
-                <div class="links">
-                    <a href="https://doi.org/10.5281/zenodo.19682907">View on Zenodo</a>
-                    <a href="https://zenodo.org/records/19682907/files/Semiprimes_in_Quadratic_Intervals.pdf" class="file-link">[Download PDF]</a>
-                </div>
-            </li>
-        
-                <li class="pub-item">
-                <h2>A Structural Barrier to Linear Sieve Methods in Quadratic Intervals</h2>
-                <div class="links">
-                    <a href="https://doi.org/10.5281/zenodo.19636536">View on Zenodo</a>
-                    <a href="https://zenodo.org/records/19636536/files/A_Structural_Barrier_to_Linear_Sieve_Methods_in_Quadratic_Intervals.pdf" class="file-link">[Download PDF]</a>
-                </div>
-            </li>
-            
-                    <li class="pub-item">
-                <h2>Reciprocal Phases and the Exponential Sum Approach to J_n</h2>
-                <div class="links">
-                    <a href="https://doi.org/10.5281/zenodo.19561776">View on Zenodo</a>
-                    <a href="https://zenodo.org/records/19561776/files/Reciprocal_Phases_and_the_Exponential_Sum_Approach_to_Jn.pdf" class="file-link">[Download PDF]</a>
-                </div>
-            </li>
-            
-                    <li class="pub-item">
-                <h2>A Note on the Parity Obstruction in a Quadratic Interval</h2>
-                <div class="links">
-                    <a href="https://doi.org/10.5281/zenodo.19547353">View on Zenodo</a>
-                    <a href="https://zenodo.org/records/19547353/files/A_Note_on_the_Parity_Obstruction_in_a_Quadratic_Interval.pdf" class="file-link">[Download PDF]</a>
-                </div>
-            </li>
-        
-            <li class="pub-item">
+        <div class="category-label">The Central Conditional Reduction</div>
+        <ul class="section-list">
+            <li class="pub-item featured">
                 <h2>Primes in Square Intervals: The Remaining Analytic Obstacle</h2>
+                <p class="role">The spine of the J<sub>n</sub> analytic program. A five-stage Bombieri&ndash;Friedlander&ndash;Iwaniec dispersion chain reduces prime existence in J<sub>n</sub> to a single averaged-Kloosterman hypothesis in the Deshouillers&ndash;Iwaniec style; the perfect-square centering at (2n)<sup>2</sup> places a square factor in the second Kloosterman argument, producing a positive-proportion Sali&eacute; subset.</p>
                 <div class="links">
                     <a href="https://doi.org/10.5281/zenodo.19521825">View on Zenodo</a>
                     <a href="https://zenodo.org/records/19521825/files/Primes_in_Square_Intervals__The_Remaining_Analytic_Obstacle.pdf" class="file-link">[Download PDF]</a>
                 </div>
             </li>
-            
-                    <li class="pub-item">
-                <h2>The Quadratic Character Contribution to the Averaged Negative Square Discrepancy</h2>
-                <div class="links">
-                    <a href="https://doi.org/10.5281/zenodo.19503555">View on Zenodo</a>
-                    <a href="https://zenodo.org/records/19503555/files/The_Quadratic_Character_Contribution.pdf" class="file-link">[Download PDF]</a>
-                </div>
-            </li>
-            
+        </ul>
+
+        <div class="category-label">Prerequisites</div>
+        <ul class="section-list">
             <li class="pub-item">
-                <h2>A Minimal Distributional Hypothesis for Primes in the Interval [4n²−n, 4n²+n]</h2>
+                <h2>A Minimal Distributional Hypothesis for Primes in the Interval [4n&sup2;&minus;n,&nbsp;4n&sup2;+n]</h2>
+                <p class="role">Master reduction. States the minimal averaged hypothesis on the negative-square discrepancy and derives prime existence in J<sub>n</sub> from it via Buchstab decomposition.</p>
                 <div class="links">
                     <a href="https://doi.org/10.5281/zenodo.19441880">View on Zenodo</a>
                     <a href="https://zenodo.org/records/19441880/files/A_Minimal_Distributional_Hypothesis_for_Primes.pdf" class="file-link">[Download PDF]</a>
@@ -156,15 +152,107 @@
             </li>
 
             <li class="pub-item">
+                <h2>Eliminating the Parity Obstruction in a Quadratic Interval</h2>
+                <p class="role">Removes the ultra-rough semiprime obstruction in J<sub>n</sub> via the factorization gap (2n+1)<sup>2</sup> > 4n<sup>2</sup>+n, establishing that every composite in J<sub>n</sub> has a prime factor &le; 2n.</p>
+                <div class="links">
+                    <a href="https://doi.org/10.5281/zenodo.19986694">View on Zenodo</a>
+                    <a href="https://zenodo.org/records/19986694/files/Eliminating_the_Parity_Obstruction_in_a_Quadratic_Interval.pdf" class="file-link">[Download PDF]</a>
+                </div>
+            </li>
+
+            <li class="pub-item">
+                <h2>A Note on the Parity Obstruction in a Quadratic Interval</h2>
+                <p class="role">Companion note to the parity-elimination paper above; earlier and more compact treatment of the factorization-gap argument.</p>
+                <div class="links">
+                    <a href="https://doi.org/10.5281/zenodo.19547353">View on Zenodo</a>
+                    <a href="https://zenodo.org/records/19547353/files/A_Note_on_the_Parity_Obstruction_in_a_Quadratic_Interval.pdf" class="file-link">[Download PDF]</a>
+                </div>
+            </li>
+        </ul>
+
+        <div class="category-label">Companions</div>
+        <ul class="section-list">
+            <li class="pub-item">
+                <h2>The Quadratic Character Contribution to the Averaged Negative Square Discrepancy</h2>
+                <p class="role">Parallel angle on the master hypothesis via character decomposition. Verifies the real-character contribution &Delta;<sub>2</sub>(m) using Jutila and Heath&ndash;Brown zero-density estimates &mdash; unconditional, ineffective due to potential Siegel zeros.</p>
+                <div class="links">
+                    <a href="https://doi.org/10.5281/zenodo.19503555">View on Zenodo</a>
+                    <a href="https://zenodo.org/records/19503555/files/The_Quadratic_Character_Contribution.pdf" class="file-link">[Download PDF]</a>
+                </div>
+            </li>
+
+            <li class="pub-item">
+                <h2>Reciprocal Phases and the Exponential Sum Approach to J<sub>n</sub></h2>
+                <p class="role">Phase-factorization and exponential-sum analysis at the J<sub>n</sub> scale; develops machinery used in the dispersion chain.</p>
+                <div class="links">
+                    <a href="https://doi.org/10.5281/zenodo.19561776">View on Zenodo</a>
+                    <a href="https://zenodo.org/records/19561776/files/Reciprocal_Phases_and_the_Exponential_Sum_Approach_to_Jn.pdf" class="file-link">[Download PDF]</a>
+                </div>
+            </li>
+        </ul>
+
+        <div class="category-label">Boundary Conditions</div>
+        <ul class="section-list">
+            <li class="pub-item">
+                <h2>A Structural Barrier to Linear Sieve Methods in Quadratic Intervals</h2>
+                <p class="role">Shows the parity-style obstruction to linear sieves at the J<sub>n</sub> scale: the linear-sieve lower-bound function f(s) vanishes for s &le; 2 at realistic levels of distribution. Motivates the dispersion-method route taken in the centerpiece paper.</p>
+                <div class="links">
+                    <a href="https://doi.org/10.5281/zenodo.19636536">View on Zenodo</a>
+                    <a href="https://zenodo.org/records/19636536/files/A_Structural_Barrier_to_Linear_Sieve_Methods_in_Quadratic_Intervals.pdf" class="file-link">[Download PDF]</a>
+                </div>
+            </li>
+        </ul>
+
+        <div class="category-label">Extensions</div>
+        <ul class="section-list">
+            <li class="pub-item">
+                <h2>Primes in Structured &radic;x-Intervals and Density-One Quadratic Persistence</h2>
+                <p class="role">Transfers the BFI dispersion framework from J<sub>n</sub> to the family J<sub>n</sub><sup>(k)</sup> = (n<sup>2</sup>/k,&nbsp;(n+1)<sup>2</sup>/k); under a density-one weakening of the transferred hypothesis, the failure set has natural density zero for k &isin; {2,&nbsp;3}. The Sali&eacute; coherence available for the parent J<sub>n</sub> is unavailable here.</p>
+                <div class="links">
+                    <a href="https://doi.org/10.5281/zenodo.19716353">View on Zenodo</a>
+                    <a href="https://zenodo.org/records/19716353/files/Primes_in_Structured_Intervals_and_Density_One_Quadratic_Persistence.pdf" class="file-link">[Download PDF]</a>
+                </div>
+            </li>
+
+            <li class="pub-item">
+                <h2>Semiprimes 2p and 3p in Quadratic Intervals: A Legendre-Class Persistence Problem</h2>
+                <p class="role">Computational and structural verification that every J<sub>n</sub><sup>(k)</sup> for k &isin; {2,&nbsp;3} contains a semiprime of the form 2p or 3p; verified through n = 10<sup>7</sup> with zero failures, framed via a Cram&eacute;r-gap parsimony argument.</p>
+                <div class="links">
+                    <a href="https://doi.org/10.5281/zenodo.19682907">View on Zenodo</a>
+                    <a href="https://zenodo.org/records/19682907/files/Semiprimes_in_Quadratic_Intervals.pdf" class="file-link">[Download PDF]</a>
+                </div>
+            </li>
+
+            <li class="pub-item">
                 <h2>A Multiplicity-Corrected Legendre Sieve for Primes in Consecutive Square Intervals</h2>
+                <p class="role">Modified Legendre sieve replacing the local density 1/p with d/p<sup>2</sup> for large primes. Computational verification confirms the asymptotic ratio &pi;(I<sub>n</sub>)/E(d) &sim; (e<sup>&gamma;</sup>/2)(1 + 1/ln d).</p>
                 <div class="links">
                     <a href="https://doi.org/10.5281/zenodo.19416766">View on Zenodo</a>
                     <a href="https://zenodo.org/records/19416766/files/A_Multiplicity_Corrected_Legendre_Sieve_for_Primes_in_Consecutive_Square_Intervals.pdf" class="file-link">[Download PDF]</a>
                 </div>
             </li>
-            
+
+            <li class="pub-item">
+                <h2>Factor Rays and the Self-Conjugate Parabola: Deterministic Coverage Geometry in Square Intervals</h2>
+                <p class="role">Geometric coverage analysis of factor rays in the square-interval setting.</p>
+                <div class="links">
+                    <a href="https://doi.org/10.5281/zenodo.20016399">View on Zenodo</a>
+                    <a href="https://zenodo.org/records/20016399/files/Factor_Rays_and_the_Self_Conjugate_Parabola.pdf" class="file-link">[Download PDF]</a>
+                </div>
+            </li>
+        </ul>
+
+        <!-- ================================================== -->
+        <!-- PROGRAM 2: COLLATZ                                 -->
+        <!-- ================================================== -->
+
+        <div class="program-title">The Collatz Program</div>
+        <div class="program-blurb">Loop structure, modular spike geometry, and cycle exclusion for 3x+n-type maps.</div>
+
+        <ul class="section-list">
             <li class="pub-item">
                 <h2>Inverse Pairs and the Loop Structure of Collatz-Type Functions</h2>
+                <p class="role">Loop geometry in 3x+n maps; conjugacy theorem for 3x+3<sup>k</sup>; explicit inverse-pair inputs.</p>
                 <div class="links">
                     <a href="https://doi.org/10.5281/zenodo.19387419">View on Zenodo</a>
                     <a href="https://zenodo.org/records/19387419/files/Inverse_Pairs_and_the_Loop_Structure_of_Collatz_Type_Functions.pdf" class="file-link">[Download PDF]</a>
@@ -172,23 +260,26 @@
             </li>
 
             <li class="pub-item">
-                <h2>Sieve Structures of Primorial Goldbach Complements</h2>
-                <div class="links">
-                    <a href="https://doi.org/10.5281/zenodo.19008286">View on Zenodo</a>
-                    <a href="https://zenodo.org/records/19008286/files/Sieve_Structures_of_Primorial_Goldbach_Complements.pdf" class="file-link">[Download PDF]</a>
-                </div>
-            </li>
-
-            <li class="pub-item">
                 <h2>Spike Structures, Finite-State Exclusion, and Bounded-Exponent Collatz Cycles</h2>
+                <p class="role">Modular spike structures and finite-state exclusion of bounded-exponent Collatz cycles; full computational search through L &isin; [50,&nbsp;200] with no R=2 cycles found across ~7.5 billion candidates.</p>
                 <div class="links">
                     <a href="https://doi.org/10.5281/zenodo.19039376">View on Zenodo</a>
                     <a href="https://zenodo.org/records/19039376/files/Spike_Structures__Finite_State_Exclusion__and_Bounded_Exponent_Collatz_Cycles.pdf" class="file-link">[Download PDF]</a>
                 </div>
             </li>
+        </ul>
 
+        <!-- ================================================== -->
+        <!-- PROGRAM 3: PRIMORIAL GOLDBACH                      -->
+        <!-- ================================================== -->
+
+        <div class="program-title">The Primorial Goldbach Program</div>
+        <div class="program-blurb">Goldbach representations of primorials &mdash; singular series, Type II sums, and least-prime-factor structure.</div>
+
+        <ul class="section-list">
             <li class="pub-item">
                 <h2>The Goldbach Problem for Primorials: Singular Series, Type II Sums, and LPF Structure</h2>
+                <p class="role">Integrated treatment combining the singular-series analysis of primorial Goldbach partitions with the bilinear minor-arcs hypothesis and LPF allocation; positions Hypothesis H(k) at the current research frontier, strictly weaker than Elliott&ndash;Halberstam.</p>
                 <div class="links">
                     <a href="https://doi.org/10.5281/zenodo.19055865">View on Zenodo</a>
                     <a href="https://zenodo.org/records/19055865/files/The_Goldbach_Problem_for_Primorials_Singular_Series__Type_II_Sums_and_LPF_Structure.pdf" class="file-link">[Download PDF]</a>
@@ -196,14 +287,15 @@
             </li>
 
             <li class="pub-item">
-                <h2>Eliminating the Parity Obstruction in a Quadratic Interval</h2>
+                <h2>Sieve Structures of Primorial Goldbach Complements</h2>
+                <p class="role">Earlier structural treatment of Goldbach-complement sieves at primorial moduli; precursor to the integrated paper above.</p>
                 <div class="links">
-                    <a href="https://doi.org/10.5281/zenodo.19986694">View on Zenodo</a>
-                    <a href="https://zenodo.org/records/19986694/files/Eliminating_the_Parity_Obstruction_in_a_Quadratic_Interval.pdf" class="file-link">[Download PDF]</a>
+                    <a href="https://doi.org/10.5281/zenodo.19008286">View on Zenodo</a>
+                    <a href="https://zenodo.org/records/19008286/files/Sieve_Structures_of_Primorial_Goldbach_Complements.pdf" class="file-link">[Download PDF]</a>
                 </div>
             </li>
-
         </ul>
+
     </div>
 
 </body>
