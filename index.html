@@ -107,6 +107,8 @@
             font-style: italic;
             margin: 4px 0 6px 0;
         }
+        
+        /* Featured Blocks */
         .featured {
             background: #f4f8f9;
             padding: 16px 18px;
@@ -115,6 +117,17 @@
             margin-bottom: 22px;
         }
         .featured h2 { color: #2c3e50; }
+        
+        /* Snaps adjacent featured items together seamlessly */
+        .pub-item.featured + .pub-item.featured {
+            margin-top: -22px; 
+            border-top-left-radius: 0;
+        }
+        /* Squares off the bottom of the top item so the border is perfectly straight */
+        .pub-item.featured:has(+ .pub-item.featured) {
+            border-bottom-left-radius: 0;
+        }
+
         ul.section-list { padding-left: 0; margin-top: 0; }
     </style>
 </head>
