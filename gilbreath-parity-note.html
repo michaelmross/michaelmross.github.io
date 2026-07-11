@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Is Gilbreath’s Conjecture Garden-Variety Numerology?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400;0,600;0,700;1,400&family=Spectral:ital,wght@0,300;0,500;1,300&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#fbfaf7;
+    --ink:#1d2129;
+    --faint:#6b7080;
+    --rule:#d8d5cc;
+    --odd:#8f2d3c;        /* madder — odd entries, the parity wave */
+    --odd-bg:#f6e9ea;
+    --even:#8a8f9c;
+    --pin:#1f5f4e;        /* pine — the {0,2} pinned regime */
+    --pin-bg:#e7efec;
+  }
+  *{box-sizing:border-box}
+  html{background:var(--paper)}
+  body{
+    margin:0 auto;
+    max-width:46rem;
+    padding:4rem 1.5rem 6rem;
+    color:var(--ink);
+    font-family:'STIX Two Text',Georgia,serif;
+    font-size:1.075rem;
+    line-height:1.72;
+  }
+  header{margin-bottom:3rem}
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:.72rem;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--faint);
+    margin:0 0 1.1rem;
+  }
+  h1{
+    font-family:'Spectral',Georgia,serif;
+    font-weight:300;
+    font-size:2.15rem;
+    line-height:1.22;
+    margin:0 0 .4rem;
+    letter-spacing:-.01em;
+  }
+  h1 .q{font-style:italic;font-weight:300}
+  .subtitle{
+    font-family:'Spectral',Georgia,serif;
+    font-weight:300;
+    font-style:italic;
+    color:var(--faint);
+    font-size:1.05rem;
+    margin:0;
+  }
+  h2{
+    font-family:'Spectral',Georgia,serif;
+    font-weight:500;
+    font-size:1.28rem;
+    margin:3rem 0 .8rem;
+    letter-spacing:-.005em;
+  }
+  h2 .no{
+    font-family:'IBM Plex Mono',monospace;
+    font-weight:400;
+    font-size:.8rem;
+    color:var(--odd);
+    letter-spacing:.08em;
+    vertical-align:.18em;
+    margin-right:.7rem;
+  }
+  p{margin:0 0 1.15rem}
+  em{font-style:italic}
+  .thm{
+    border-left:2px solid var(--ink);
+    padding:.15rem 0 .15rem 1.15rem;
+    margin:1.6rem 0;
+  }
+  .thm .label{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:.72rem;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--faint);
+    display:block;
+    margin-bottom:.25rem;
+  }
+  .thm p{margin:0;font-style:italic}
+  code, .mono{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:.88em;
+  }
+  /* ---------- pyramids ---------- */
+  figure{margin:2.2rem 0}
+  .pyr-wrap{
+    overflow-x:auto;
+    padding:1.2rem 1rem 1.1rem;
+    border-top:1px solid var(--rule);
+    border-bottom:1px solid var(--rule);
+    background:#fff;
+  }
+  .pyr{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:.72rem;
+    line-height:1.85;
+    white-space:pre;
+    margin:0;
+  }
+  .pyr .o{color:var(--odd);font-weight:600;background:var(--odd-bg);border-radius:2px}
+  .pyr .e{color:var(--even)}
+  .pyr .z{color:var(--pin)}
+  figcaption{
+    font-family:'Spectral',Georgia,serif;
+    font-style:italic;
+    font-weight:300;
+    font-size:.92rem;
+    color:var(--faint);
+    margin-top:.7rem;
+    line-height:1.55;
+  }
+  .legend{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:.68rem;
+    color:var(--faint);
+    margin-top:.55rem;
+    letter-spacing:.03em;
+  }
+  .legend .sw{display:inline-block;width:.75em;height:.75em;border-radius:2px;vertical-align:-.08em;margin-right:.35em}
+  .legend .so{background:var(--odd)}
+  .legend .se{background:var(--even)}
+  .legend .sz{background:var(--pin)}
+  .legend span.item{margin-right:1.4rem;white-space:nowrap}
+  /* ---------- leading-column comparison ---------- */
+  .cols{
+    display:flex;
+    gap:2.5rem;
+    justify-content:center;
+    flex-wrap:wrap;
+    padding:1.4rem 1rem;
+    border-top:1px solid var(--rule);
+    border-bottom:1px solid var(--rule);
+    background:#fff;
+  }
+  .col{text-align:center}
+  .col .head{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:.68rem;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--faint);
+    margin-bottom:.6rem;
+  }
+  .col .seq{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:.95rem;
+    line-height:1.9;
+  }
+  .col .seq .big{color:var(--odd);font-weight:600;font-size:1.15em}
+  .col .seq .one{color:var(--pin);font-weight:600}
+  .verdict{
+    margin:3rem 0 0;
+    padding:1.4rem 1.5rem;
+    background:#fff;
+    border:1px solid var(--rule);
+  }
+  .verdict .label{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:.72rem;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--odd);
+    display:block;
+    margin-bottom:.4rem;
+  }
+  .verdict p{margin:0}
+  .refs{
+    margin-top:3.2rem;
+    border-top:1px solid var(--rule);
+    padding-top:1.4rem;
+  }
+  .refs h2{margin-top:0}
+  .refs ol{
+    padding-left:1.3rem;
+    margin:0;
+    font-size:.94rem;
+  }
+  .refs li{margin-bottom:.5rem}
+  @media (max-width:560px){
+    body{padding-top:2.5rem}
+    h1{font-size:1.7rem}
+    .pyr{font-size:.6rem}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <p class="eyebrow">A note on iterated absolute differences · July 2026</p>
+  <h1>Is Gilbreath’s conjecture <span class="q">garden-variety numerology?</span></h1>
+  <p class="subtitle">What the parity argument proves, and what remains open</p>
+</header>
+
+<p>It is often observed that Gilbreath’s conjecture is “really” a fact about parity rather than about primes: start any suitable sequence with 2 and follow it with odd numbers, and the difference pyramid seems to funnel down to 1 all the same. The observation is genuinely illuminating, and the question in the title deserves a precise answer. It turns out the answer is: half yes, half no — and locating the boundary between the two halves is where the interesting mathematics lives.</p>
+
+<h2><span class="no">§1</span>The trivial half: the leading term is odd</h2>
+
+<p>Start with the number 2 followed by odd numbers, and take iterated absolute forward differences. The first difference row has the shape (odd, even, even, …): the single odd entry on the left is |3 − 2| = 1, and everything to its right is |odd − odd| = even. The induction is then airtight: if a row has the shape (odd, even, even, …), the next row’s leading entry is |even − odd| = odd and every other entry is |even − even| = even, so the shape persists.</p>
+
+<div class="thm">
+  <span class="label">Proposition (parity wave)</span>
+  <p>For any sequence beginning 2, odd, odd, odd, …, the leading term of every row of iterated absolute differences is odd.</p>
+</div>
+
+<p>That is a genuine theorem, it is elementary, and it has nothing to do with primes. Substituting a random ascending odd sequence for the primes demonstrates it directly — this is the sense in which the “numerology” observation is exactly right.</p>
+
+<h2><span class="no">§2</span>Odd is not 1</h2>
+
+<p>Notice, however, what the proposition proves: <em>odd</em>, not <em>1</em>. The content of Gilbreath’s conjecture is precisely the step from “odd” to “exactly 1,” and parity alone says nothing about that step. Two small examples make the distinction concrete. The sequence 2, 3, 13 gives rows (1, 10), then (9) — a leading term of 9: odd, but not 1. And a pyramid built on every sixth prime (2, 17, 41, 67, …, taken to 13 terms) has leading column 2, 15, 9, 7, 5, 3, 1, 1, 1, 1, 1, 7, 3 — parity intact throughout, while the collapse to 1 comes and goes. So the parity mechanism, by itself, guarantees only that such a pyramid funnels to <em>some odd number</em>; whether that number is 1 is a further question.</p>
+
+<h2><span class="no">§3</span>The second mechanism: the {0, 2} regime</h2>
+
+<p>What forces the odd number to be 1 is a separate, self-perpetuating structure. The set {0, 2} is closed under absolute differencing (|0 − 2| = 2, |2 − 2| = 0, |0 − 0| = 0), and a leading 1 against a 0 or a 2 stays 1 (|1 − 0| = |1 − 2| = 1). Once a row of the form (1, then a long run of 0s and 2s) appears, the 1 is locked in for as many rows as the run is long. Gilbreath’s conjecture is really the claim that the prime pyramid <em>reaches and indefinitely sustains</em> that regime. This is what Odlyzko verified computationally — for all primes below 10<sup>13</sup>, roughly 3.4 × 10<sup>11</sup> rows [3], since extended further — and it is not a parity fact.</p>
+
+<h2><span class="no">§4</span>A side-by-side comparison</h2>
+
+<p>Placing the prime pyramid next to a random-odd pyramid is instructive — and what the comparison reveals most clearly is how the two pyramids <em>differ</em>. Below, odd entries are set in red; entries in the pinned {0, 2} regime are set in green.</p>
+
+<figure>
+  <div class="pyr-wrap">
+<pre class="pyr" id="pyrPrimes"></pre>
+  </div>
+  <p class="legend">
+    <span class="item"><span class="sw so"></span>odd (the parity wave)</span>
+    <span class="item"><span class="sw sz"></span>0 or 2 (pinned regime)</span>
+    <span class="item"><span class="sw se"></span>other even</span>
+  </p>
+  <figcaption>Fig. 1 — The first 20 primes. The second row is already (1, then small evens); by the third row nearly everything to the right of the wall is 0s and 2s. The 1 is pinned immediately and permanently.</figcaption>
+</figure>
+
+<figure>
+  <div class="pyr-wrap">
+<pre class="pyr" id="pyrRandom"></pre>
+  </div>
+  <figcaption>Fig. 2 — The sequence 2 followed by 19 ascending odd numbers under 400. The left edge wanders: 1, 23, 9, 3, 3, 3, 3 before finally reaching 1 in row 8. Parity guarantees it stays odd; nothing guaranteed it would reach 1 before the triangle ran out.</figcaption>
+</figure>
+
+<p>The leading columns tell the whole story at a glance:</p>
+
+<div class="cols">
+  <div class="col">
+    <div class="head">first 20 primes</div>
+    <div class="seq"><span class="one">1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1</span></div>
+  </div>
+  <div class="col">
+    <div class="head">random odd sequence</div>
+    <div class="seq"><span class="one">1</span> <span class="big">23</span> <span class="big">9</span> <span class="big">3 3 3 3</span> <span class="one">1 1 1 1 1 1 1 1 1 1 1 1</span></div>
+  </div>
+</div>
+
+<p style="margin-top:1.3rem">The transient 23 is the visible signature of behavior the primes never exhibit. The random sequence settled at 1 because twenty rows happened to be enough runway; the every-sixth-prime example shows the settling can also fail within the available rows. The primes, by contrast, hit 1 in the very first difference row and never leave it — because prime gaps are small enough, right from the start, that the second row is already (1, then small evens), and the small evens grind down to {0, 2} before anything large can reach the left wall. Gilbreath’s conjecture asserts that this holds for <em>every</em> row, forever.</p>
+
+<h2><span class="no">§5</span>Where the actual arithmetic lives</h2>
+
+<p>Odlyzko’s own remark localizes the difficulty: a rigorous proof is out of reach because the conjecture would follow from the maximal prime gap near <em>x</em> staying not much larger than (log <em>x</em>)² — an unproven bound of roughly Cramér strength [3]. That is the genuine arithmetic input: the collapse to 1 is, at bottom, a statement about how slowly prime gaps grow, expressed through a triangle of subtractions. Croft’s observation (recorded by Guy [4]) makes the complementary point: the property should hold for <em>any</em> sequence beginning with 2 whose entries are otherwise odd and whose gaps grow sufficiently slowly — it was never about primality per se, but the primes are the interesting sequence for which the requisite gap bound is believed and unproven.</p>
+
+<div class="verdict">
+  <span class="label">Answer</span>
+  <p>Half yes, half no. The <em>parity wave</em> — leading term stays odd, right side drains to evens — is garden-variety in the best sense: elementary, fully understood, and independent of primality. The <em>pinning to exactly 1</em> is neither: it is a genuine, open assertion about the smallness of prime gaps. The two claims are easy to conflate because the pyramid displays them together, but “odd” and “1” are different statements — and the conjecture lives entirely in the space between them.</p>
+</div>
+
+<div class="refs">
+  <h2>References</h2>
+  <ol>
+    <li>F. Proth, <em>Sur la série des nombres premiers</em>, Nouv. Corresp. Math. <b>4</b> (1878), 236–240. (An early statement, with an incorrect proof.)</li>
+    <li>N. L. Gilbreath (1958); see M. Gardner, <em>Patterns in primes are a clue to the strong law of small numbers</em>, Sci. Amer. <b>243</b> (Dec. 1980), 18–28.</li>
+    <li>A. M. Odlyzko, <em>Iterated absolute values of differences of consecutive primes</em>, Math. Comp. <b>61</b> (1993), 373–380.</li>
+    <li>R. K. Guy, <em>Unsolved Problems in Number Theory</em>, 2nd ed., §A10, Springer, 1994.</li>
+  </ol>
+</div>
+
+<script>
+(function(){
+  function diffs(a){var r=[];for(var i=0;i+1<a.length;i++)r.push(Math.abs(a[i+1]-a[i]));return r;}
+  function buildPyramid(seq){
+    var rows=[seq.slice()];
+    var cur=seq.slice();
+    while(cur.length>1){cur=diffs(cur);rows.push(cur);}
+    return rows;
+  }
+  function render(el,rows){
+    // column width based on widest entry
+    var w=0;
+    rows.forEach(function(r){r.forEach(function(v){w=Math.max(w,String(v).length);});});
+    var cw=w+2; // cell width incl. spacing
+    var html='';
+    rows.forEach(function(r,ri){
+      var indent=' '.repeat(Math.round(ri*cw/2));
+      var line=indent;
+      r.forEach(function(v){
+        var s=String(v);
+        var pad=cw-s.length;
+        var left=Math.floor(pad/2), right=pad-left;
+        var cls;
+        if(ri===0){cls=(v%2!==0)?'o':'e';}
+        else if(v%2!==0){cls='o';}
+        else if(v===0||v===2){cls='z';}
+        else{cls='e';}
+        line+=' '.repeat(left)+'<span class="'+cls+'">'+s+'</span>'+' '.repeat(right);
+      });
+      html+=line.replace(/\s+$/,'')+'\n';
+    });
+    el.innerHTML=html;
+  }
+  var primes=[2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71];
+  var random=[2,3,27,65,83,93,117,133,155,177,207,217,249,269,283,305,321,351,359,383];
+  render(document.getElementById('pyrPrimes'),buildPyramid(primes));
+  render(document.getElementById('pyrRandom'),buildPyramid(random));
+})();
+</script>
+
+</body>
+</html>
