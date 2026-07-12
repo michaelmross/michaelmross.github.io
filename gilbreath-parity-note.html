@@ -197,12 +197,12 @@
 <body>
 
 <header>
-  <p class="eyebrow">A note on iterated absolute differences · July 2026</p>
+  <p class="eyebrow">A note on iterated absolute differences · revised July 2026</p>
   <h1>Is Gilbreath’s conjecture <span class="q">garden-variety numerology?</span></h1>
   <p class="subtitle">What the parity argument proves, and what remains open</p>
 </header>
 
-<p>It is often observed that Gilbreath’s conjecture is “really” a fact about parity rather than about primes: start any suitable sequence with 2 and follow it with odd numbers, and the difference pyramid seems to funnel down to 1 all the same. The observation is genuinely illuminating, and the question in the title deserves a precise answer. It turns out the answer is: half yes, half no — and locating the boundary between the two halves is where the interesting arithmetic lives.</p>
+<p>It is often observed that Gilbreath’s conjecture is “really” a fact about parity rather than about primes: start any suitable sequence with 2 and follow it with odd numbers, and the difference pyramid seems to funnel down to 1 all the same. The observation is genuinely illuminating, and the question in the title deserves a precise answer. It turns out the answer is: half yes, half no — and locating the boundary between the two halves is where the interesting mathematics lives.</p>
 
 <h2><span class="no">§1</span>The trivial half: the leading term is odd</h2>
 
@@ -221,7 +221,9 @@
 
 <h2><span class="no">§3</span>The second mechanism: the {0, 2} regime</h2>
 
-<p>What forces the odd number to be 1 is a separate, self-perpetuating structure. The set {0, 2} is closed under absolute differencing (|0 − 2| = 2, |2 − 2| = 0, |0 − 0| = 0), and a leading 1 against a 0 or a 2 stays 1 (|1 − 0| = |1 − 2| = 1). Once a row of the form (1, then a long run of 0s and 2s) appears, the 1 is locked in for as many rows as the run is long. Gilbreath’s conjecture is really the claim that the prime pyramid <em>reaches and indefinitely sustains</em> that regime. This is what Odlyzko verified computationally — for all primes below 10<sup>13</sup>, roughly 3.4 × 10<sup>11</sup> rows [3], since extended further — and it is not a parity fact.</p>
+<p>What forces the odd number to be 1 is a separate, self-perpetuating structure. The set {0, 2} is closed under absolute differencing (|0 − 2| = 2, |2 − 2| = 0, |0 − 0| = 0), and a leading 1 against a 0 or a 2 stays 1 (|1 − 0| = |1 − 2| = 1). Once a row of the form (1, then a long run of 0s and 2s) appears, the 1 is locked in for as many rows as the run is long. Gilbreath’s conjecture is really the claim that the prime pyramid <em>reaches and indefinitely sustains</em> that regime. This is what Odlyzko verified computationally — for the first 3.4 × 10<sup>11</sup> rows [3] — and it is not a parity fact.</p>
+
+<p>The same closure property, though, cuts both ways. {0, <em>d</em>} is closed under differencing for every <em>d</em> ≥ 2, so the mechanism that pins the 1 in place when <em>d</em> = 2 is also the mechanism that could preserve a large disturbance when <em>d</em> is large. That double edge is the crux of §5.</p>
 
 <h2><span class="no">§4</span>A side-by-side comparison</h2>
 
@@ -261,13 +263,23 @@
 
 <p style="margin-top:1.3rem">The transient 23 is the visible signature of behavior the primes never exhibit. The random sequence settled at 1 because twenty rows happened to be enough runway; the every-sixth-prime example shows the settling can also fail within the available rows. The primes, by contrast, hit 1 in the very first difference row and never leave it — because prime gaps are small enough, right from the start, that the second row is already (1, then small evens), and the small evens grind down to {0, 2} before anything large can reach the left wall. Gilbreath’s conjecture asserts that this holds for <em>every</em> row, forever.</p>
 
-<h2><span class="no">§5</span>Where the actual arithmetic lives</h2>
+<h2><span class="no">§5</span>Where the actual difficulty lives</h2>
 
-<p>Odlyzko’s own remark localizes the difficulty: a rigorous proof is out of reach because the conjecture would follow from the maximal prime gap near <em>x</em> staying not much larger than (log <em>x</em>)² — an unproven bound of roughly Cramér strength [3]. That is the genuine arithmetic input: the collapse to 1 is, at bottom, a statement about how slowly prime gaps grow, expressed through a triangle of subtractions. Croft’s observation (recorded by Guy [4]) makes the complementary point: the property should hold for <em>any</em> sequence beginning with 2 whose entries are otherwise odd and whose gaps grow sufficiently slowly — it was never about primality per se, but the primes are the interesting sequence for which the requisite gap bound is believed and unproven.</p>
+<p>It is tempting to say that the hard half reduces to a single arithmetic input — that a Cramér-type bound on prime gaps, <em>p</em><sub><em>n</em>+1</sub> − <em>p</em><sub><em>n</em></sub> ≪ log²<em>n</em>, would settle the matter. It would not. Such a bound controls only the <em>size</em> of the entries in the top row; it says nothing about their <em>arrangement</em>, and arrangement is what governs whether the pyramid decays. Eppstein’s anti-Gilbreath sequences [5] make this concrete: one can have small, slowly growing gaps and still fail.</p>
+
+<p>The obstruction is that certain patterns refuse to shrink. The set {0, <em>d</em>} is closed under absolute differencing for <em>every</em> <em>d</em> ≥ 2, not just <em>d</em> = 2 — so a long block taking only the values 0 and <em>d</em> propagates downward at undiminished amplitude, and a long block of pure zeroes likewise props up whatever sits beside it. Chase, Hunter and Tao [6] prove this intuition is essentially the whole story: assuming Cramér-type gap bounds, their deterministic inverse theorem shows that <em>the only</em> obstructions to the array collapsing are long zero blocks and long shallow {0, <em>d</em>}-valued blocks. Ruling those out for the primes appears difficult even under strong conjectures such as Hardy–Littlewood.</p>
+
+<p>This also sharpens Croft’s observation (recorded by Guy [4]): the phenomenon was never about primality per se — but the correct hypothesis on a general sequence is not merely “gaps grow slowly.” It is that the gaps do not <em>concentrate in an arithmetically rigid set</em>. The precise notion is 2-separation: a set of integers containing no two consecutive values, such as the evens or the multiples of 3. If the gaps were trapped in such a set, the whole array would be trapped with them, and the collapse to 1 could genuinely fail.</p>
+
+<h2><span class="no">§6</span>The state of the art</h2>
+
+<p>The randomized versions of the conjecture are now theorems. Chase [7] proved it for uniformly distributed initial data of slowly growing range, and Chase–Hunter–Tao [6] proved it for the Cramér random model — where normalized prime gaps are replaced by independent geometric variables of logarithmic size — and, more generally, for any independent model whose entries neither grow linearly nor concentrate in a 2-separated set. So Gilbreath’s conjecture is exactly what one expects of a “random” sequence with prime-like gap statistics; what is missing is any handle on the primes’ actual arrangement.</p>
+
+<p>Even the averaged decay rate remains stubborn. For exponential initial data, let <em>c<sub>i</sub></em> be the expected value of an entry at depth <em>i</em>. One might guess exponential decay; in fact Chase–Hunter–Tao show Σ<sub><em>i</em>≤<em>n</em></sub> <em>c<sub>i</sub></em> ≥ log(<em>n</em> + <em>e</em>), so <em>c<sub>i</sub></em> cannot decay faster than 1/<em>i</em> — and the sequence is not even monotone, its irregularity apparently tied to the count of odd entries in rows of Pascal’s triangle. They can prove neither that <em>c<sub>i</sub></em> tends to zero nor even that it stays bounded. The rate at which a Gilbreath array grinds itself down is, remarkably, still an open question.</p>
 
 <div class="verdict">
   <span class="label">Answer</span>
-  <p>Half yes, half no. The <em>parity wave</em> — leading term stays odd, right side drains to evens — is garden-variety in the best sense: elementary, fully understood, and independent of primality. The pinning to 1 is a genuine assertion about the smallness of prime gaps. The two claims are easy to conflate because the pyramid displays them together, but “odd” and “1” are different statements — and the conjecture lives in the space between them.</p>
+  <p>Half yes, half no. The <em>parity wave</em> — leading term stays odd, right side drains to evens — is garden-variety in the best sense: elementary, fully understood, and independent of primality. The <em>pinning to exactly 1</em> is a claim that the array never harbors a long zero block or a long shallow {0, <em>d</em>}-valued block, and it is open even granting strong conjectures on prime gaps. The two are easy to conflate because the pyramid displays them together, but “odd” and “1” are different statements — and the conjecture lives in the space between them.</p>
 </div>
 
 <div class="refs">
@@ -277,6 +289,9 @@
     <li>N. L. Gilbreath (1958); see M. Gardner, <em>Patterns in primes are a clue to the strong law of small numbers</em>, Sci. Amer. <b>243</b> (Dec. 1980), 18–28.</li>
     <li>A. M. Odlyzko, <em>Iterated absolute values of differences of consecutive primes</em>, Math. Comp. <b>61</b> (1993), 373–380.</li>
     <li>R. K. Guy, <em>Unsolved Problems in Number Theory</em>, 2nd ed., §A10, Springer, 1994.</li>
+    <li>D. Eppstein, <em>Anti-Gilbreath sequences</em>, 2011.</li>
+    <li>Z. Chase, Z. Hunter, T. Tao, <em>Gilbreath’s conjecture: a Cramér random model and a deterministic analysis</em>, arXiv:2607.08712, July 2026.</li>
+    <li>Z. Chase, <em>A random analogue of Gilbreath’s conjecture</em>, Math. Ann. <b>388</b> (2024), 2611–2625.</li>
   </ol>
 </div>
 
