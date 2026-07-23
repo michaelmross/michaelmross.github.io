@@ -227,7 +227,7 @@
 
 <h2><span class="no">§4</span>A side-by-side comparison</h2>
 
-<p>Placing the prime pyramid next to a random-odd pyramid is instructive — and what the comparison reveals most clearly is how the two pyramids <em>differ</em>. Below, odd entries are set in red; entries in the pinned {0, 2} regime are set in green.</p>
+<p>Placing the prime pyramid next to a random-odd pyramid of comparable scale is instructive — and what the comparison reveals most clearly is how the two pyramids <em>differ</em>. Below, odd entries are set in red; entries in the pinned {0, 2} regime are set in green.</p>
 
 <figure>
   <div class="pyr-wrap">
@@ -245,7 +245,7 @@
   <div class="pyr-wrap">
 <pre class="pyr" id="pyrRandom"></pre>
   </div>
-  <figcaption>Fig. 2 — The sequence 2 followed by 19 ascending odd numbers under 400. The left edge wanders: 1, 23, 9, 3, 3, 3, 3 before finally reaching 1 in row 8. Parity guarantees it stays odd; nothing guaranteed it would reach 1 before the triangle ran out.</figcaption>
+  <figcaption>Fig. 2 — The sequence 2 followed by 19 ascending odd numbers below 100, chosen to match the primes in range (99 vs. 71), mean gap (5.1 vs. 3.6), and maximum gap (8 vs. 6). Even so, the left edge wanders: 1, 7, 7, 3, 3 before reaching 1 in row 6. Parity guarantees it stays odd; nothing guaranteed it would reach 1 before the triangle ran out.</figcaption>
 </figure>
 
 <p>The leading columns tell the whole story at a glance:</p>
@@ -257,11 +257,11 @@
   </div>
   <div class="col">
     <div class="head">random odd sequence</div>
-    <div class="seq"><span class="one">1</span> <span class="big">23</span> <span class="big">9</span> <span class="big">3 3 3 3</span> <span class="one">1 1 1 1 1 1 1 1 1 1 1 1</span></div>
+    <div class="seq"><span class="one">1</span> <span class="big">7 7 3 3</span> <span class="one">1 1 1 1 1 1 1 1 1 1 1 1 1 1</span></div>
   </div>
 </div>
 
-<p style="margin-top:1.3rem">The transient 23 is the visible signature of behavior the primes never exhibit. The random sequence settled at 1 because twenty rows happened to be enough runway; the every-sixth-prime example shows the settling can also fail within the available rows. The primes, by contrast, hit 1 in the very first difference row and never leave it — because prime gaps are small enough, right from the start, that the second row is already (1, then small evens), and the small evens grind down to {0, 2} before anything large can reach the left wall. Gilbreath’s conjecture asserts that this holds for <em>every</em> row, forever.</p>
+<p style="margin-top:1.3rem">The comparison is deliberately scale-matched — the odd sequence stays below 100, with mean gap 5.1 against the primes’ 3.6 — so the contrast cannot be blamed on exaggerated gaps. Even so, the transient 7, 7, 3, 3 appears: behavior the primes never exhibit. The random sequence settled at 1 because six rows of grinding sufficed and fourteen remained; the every-sixth-prime example shows the settling can also fail within the available rows, and wilder sequences with larger gaps produce proportionally longer transients. The primes, by contrast, hit 1 in the very first difference row and never leave it — because prime gaps are small enough, right from the start, that the second row is already (1, then small evens), and the small evens grind down to {0, 2} before anything large can reach the left wall. Gilbreath’s conjecture asserts that this holds for <em>every</em> row, forever.</p>
 
 <h2><span class="no">§5</span>Where the actual difficulty lives</h2>
 
@@ -329,7 +329,7 @@
     el.innerHTML=html;
   }
   var primes=[2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71];
-  var random=[2,3,27,65,83,93,117,133,155,177,207,217,249,269,283,305,321,351,359,383];
+  var random=[2,3,11,19,23,27,33,41,45,51,57,61,65,71,77,83,85,91,95,99];
   render(document.getElementById('pyrPrimes'),buildPyramid(primes));
   render(document.getElementById('pyrRandom'),buildPyramid(random));
 })();
