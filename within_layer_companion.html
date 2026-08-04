@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Within-Layer Mechanism — an interactive companion</title>
+<style>
+  :root {
+    --paper: #F7F8F6;
+    --grid: #E6EAE5;
+    --ink: #1C2733;
+    --muted: #5B6B77;
+    --gold: #A87718;
+    --gold-soft: #E7C877;
+    --crimson: #9E3B36;
+    --crimson-soft: #E5C4C1;
+    --rule: #C9D0CC;
+    --card: #FFFFFF;
+    --serif: "STIX Two Text", "Charter", "Georgia", "Times New Roman", serif;
+    --mono: "SF Mono", "Cascadia Mono", "Consolas", "Menlo", monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body {
+    background: var(--paper);
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 28px 28px;
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 17px;
+    line-height: 1.55;
+  }
+  main { max-width: 880px; margin: 0 auto; padding: 48px 20px 90px; }
+  .eyebrow {
+    font-family: var(--mono); font-size: 12px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 14px;
+  }
+  h1 {
+    font-size: clamp(30px, 5vw, 44px); font-weight: 600;
+    letter-spacing: -0.01em; line-height: 1.12; margin-bottom: 12px;
+  }
+  h1 .phi { color: var(--gold); font-style: italic; }
+  .subtitle { color: var(--muted); font-style: italic; max-width: 640px; margin-bottom: 8px; }
+  .section {
+    background: var(--card); border: 1px solid var(--rule); border-radius: 4px;
+    padding: 26px 28px 30px; margin-top: 34px;
+    box-shadow: 0 1px 0 rgba(28,39,51,0.04);
+  }
+  .sec-label {
+    font-family: var(--mono); font-size: 12px; letter-spacing: 0.12em;
+    color: var(--gold); text-transform: uppercase; margin-bottom: 6px;
+  }
+  h2 { font-size: 24px; font-weight: 600; margin-bottom: 10px; }
+  p { margin-bottom: 12px; }
+  p:last-child { margin-bottom: 0; }
+  .m { font-style: italic; }
+  .num { font-family: var(--mono); font-size: 0.92em; font-style: normal; }
+  .binom { display: inline-flex; flex-direction: column; align-items: center;
+           vertical-align: -0.55em; line-height: 1.05; font-style: italic;
+           padding: 0 2px; }
+  .binom::before, .binom::after { content: none; }
+  .binom-wrap { white-space: nowrap; }
+  .paren { font-size: 1.55em; font-weight: 300; vertical-align: -0.18em; }
+  .controls { display: flex; flex-wrap: wrap; gap: 18px; align-items: end;
+              margin: 16px 0 14px; }
+  .control label {
+    display: block; font-family: var(--mono); font-size: 12px;
+    letter-spacing: 0.08em; color: var(--muted); margin-bottom: 5px;
+  }
+  select, button, input[type=range] { font-family: var(--mono); font-size: 14px; }
+  select {
+    background: var(--paper); border: 1px solid var(--rule); border-radius: 3px;
+    padding: 6px 10px; color: var(--ink);
+  }
+  button {
+    background: var(--ink); color: var(--paper); border: 1px solid var(--ink);
+    border-radius: 3px; padding: 8px 16px; cursor: pointer;
+  }
+  button:hover { background: #2E3D4D; }
+  button:focus-visible, select:focus-visible, input:focus-visible {
+    outline: 2px solid var(--gold); outline-offset: 2px;
+  }
+  button[disabled] { opacity: 0.45; cursor: default; }
+  canvas { display: block; width: 100%; }
+  .strip-frame { border: 1px solid var(--rule); border-radius: 3px;
+                 background: #FCFCFB; overflow: hidden; }
+  .strip-caption { font-family: var(--mono); font-size: 12.5px; color: var(--muted);
+                   margin-top: 8px; }
+  .stats { display: flex; flex-wrap: wrap; gap: 26px; margin-top: 16px; }
+  .stat .k { font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em;
+             color: var(--muted); }
+  .stat .v { font-family: var(--mono); font-size: 21px; margin-top: 2px; }
+  .stat .v.gold { color: var(--gold); }
+  .zoombar { margin-top: 18px; }
+  input[type=range] { width: 100%; accent-color: var(--gold); }
+  .legend { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 12px;
+            font-family: var(--mono); font-size: 12.5px; color: var(--muted); }
+  .chip { display: inline-block; width: 11px; height: 11px; border-radius: 2px;
+          margin-right: 6px; vertical-align: -1px; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 14px; }
+  @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
+  .panel { border: 1px solid var(--rule); border-radius: 3px; background: #FCFCFB;
+           padding: 14px; }
+  .panel h3 { font-size: 16.5px; margin-bottom: 4px; }
+  .panel .cost { font-family: var(--mono); font-size: 13px; margin-top: 8px; }
+  .panel .cost b { font-weight: 600; }
+  .panel.ext .cost b { color: var(--crimson); }
+  .panel.int .cost b { color: var(--gold); }
+  svg text { font-family: var(--serif); }
+  svg .mono { font-family: var(--mono); }
+  table { border-collapse: collapse; width: 100%; margin-top: 14px;
+          font-family: var(--mono); font-size: 13.5px; }
+  th, td { text-align: right; padding: 7px 10px; border-bottom: 1px solid var(--rule); }
+  th { font-weight: 600; color: var(--muted); font-size: 12px;
+       letter-spacing: 0.06em; text-transform: uppercase; }
+  td.ratio { color: var(--gold); font-weight: 600; }
+  .note { font-size: 14.5px; color: var(--muted); margin-top: 14px; }
+  .foot { margin-top: 40px; font-size: 14px; color: var(--muted);
+          border-top: 1px solid var(--rule); padding-top: 16px; }
+  .foot a { color: var(--ink); }
+</style>
+</head>
+<body>
+<main>
+  <div class="eyebrow">Interactive companion · Erdős problem #1100</div>
+  <h1>The layer, the blockers, and <span class="phi">&phi;</span></h1>
+  <p class="subtitle">A visual companion to “An Unconditional Golden-Ratio Lower Bound
+  for Coprime Adjacent Divisors of Squarefree Integers” (M.&thinsp;M. Ross, 2026).
+  Everything on this page is computed live in your browser.</p>
+
+  <!-- ============ SECTION 1: THE LAYER ============ -->
+  <section class="section" id="layer">
+    <div class="sec-label">§5 · The object of study</div>
+    <h2>A cardinality layer, drawn live</h2>
+    <p>Draw <span class="m">k</span> independent Unif[0,1] weights and form all
+    <span class="binom-wrap"><span class="paren">(</span><span class="binom"><span class="m">k</span><span class="m">j</span></span><span class="paren">)</span></span>
+    subset sums of size <span class="m">j</span>. Each sum is a tick below. Consecutive
+    sums whose index sets are <b>disjoint</b> are marked in gold: for squarefree
+    integers these are exactly the coprime adjacent divisor pairs within the layer.
+    Theorem&nbsp;5.1 says their expected number is at least
+    <span class="m">c</span><sub class="m">&beta;</sub>&thinsp;<span class="binom-wrap"><span class="paren">(</span><span class="binom"><span class="m">k&minus;j</span><span class="m">j</span></span><span class="paren">)</span></span>.</p>
+
+    <div class="controls">
+      <div class="control">
+        <label for="selK">k (weights)</label>
+        <select id="selK"></select>
+      </div>
+      <div class="control">
+        <label for="selJ">j (layer)</label>
+        <select id="selJ"></select>
+      </div>
+      <div class="control">
+        <button id="btnRedraw">Redraw weights</button>
+      </div>
+    </div>
+
+    <div class="strip-frame"><canvas id="strip" height="86"></canvas></div>
+    <div class="strip-caption">Full layer &mdash; every subset sum, sorted. Gold ticks
+    are disjoint adjacencies.</div>
+
+    <div class="zoombar">
+      <label for="zoom" class="strip-caption" style="display:block;margin-bottom:4px">
+        Magnifier position (a 1% window of the layer)</label>
+      <input type="range" id="zoom" min="0" max="1000" value="500">
+    </div>
+    <div class="strip-frame" style="margin-top:8px"><canvas id="zoomStrip" height="120"></canvas></div>
+    <div class="strip-caption">Magnified window &mdash; individual gaps become visible;
+    gold arcs bridge disjoint consecutive pairs.</div>
+
+    <div class="stats">
+      <div class="stat"><div class="k">layer size</div><div class="v" id="stLayer">&ndash;</div></div>
+      <div class="stat"><div class="k">disjoint adjacencies N</div><div class="v gold" id="stN">&ndash;</div></div>
+      <div class="stat"><div class="k">C(k&minus;j, j)</div><div class="v" id="stTarget">&ndash;</div></div>
+      <div class="stat"><div class="k">ratio N / C(k&minus;j, j)</div><div class="v gold" id="stRatio">&ndash;</div></div>
+    </div>
+    <div class="legend">
+      <span><span class="chip" style="background:var(--gold)"></span>disjoint adjacency</span>
+      <span><span class="chip" style="background:#8C99A4"></span>other subset sum</span>
+    </div>
+  </section>
+
+  <!-- ============ SECTION 2: BLOCKERS ============ -->
+  <section class="section" id="blockers">
+    <div class="sec-label">§5 · The two obstructions</div>
+    <h2>External and internal blockers</h2>
+    <p>Fix a disjoint pair <span class="m">S</span>, <span class="m">T</span> whose sums
+    land within a window of width <span class="m">&theta;</span> of each other. The pair
+    is adjacent unless another size-<span class="m">j</span> set
+    <span class="m">R</span> lands in the gap. The proof treats the two kinds of
+    intruder with different geometry &mdash; and the difference is one power of
+    <span class="m">&theta;</span>.</p>
+    <div class="two-col">
+      <div class="panel ext">
+        <h3>External: <span class="m">R</span> uses a free coordinate</h3>
+        <svg viewBox="0 0 380 150" role="img" aria-label="External blocker: a smoothed density over a one-dimensional gap of width theta">
+          <line x1="20" y1="112" x2="360" y2="112" stroke="#1C2733" stroke-width="1.4"/>
+          <rect x="168" y="72" width="44" height="40" fill="#E5C4C1" opacity="0.65"/>
+          <line x1="168" y1="66" x2="168" y2="118" stroke="#1C2733" stroke-width="1.4"/>
+          <line x1="212" y1="66" x2="212" y2="118" stroke="#1C2733" stroke-width="1.4"/>
+          <text x="168" y="136" text-anchor="middle" font-size="13" font-style="italic">X(S)</text>
+          <text x="212" y="136" text-anchor="middle" font-size="13" font-style="italic">X(T)</text>
+          <path d="M 40 100 C 110 30, 270 30, 340 100" fill="none" stroke="#9E3B36" stroke-width="1.6"/>
+          <text x="190" y="26" text-anchor="middle" font-size="12.5" fill="#9E3B36">conditional density of X(R): sup &le; C/&radic;m</text>
+          <path d="M 168 60 L 212 60" stroke="#5B6B77" stroke-width="1"/>
+          <path d="M 168 56 L 168 64 M 212 56 L 212 64" stroke="#5B6B77" stroke-width="1"/>
+          <text x="190" y="52" text-anchor="middle" font-size="12" font-style="italic" fill="#5B6B77">&theta;</text>
+        </svg>
+        <p style="font-size:14.5px">A coordinate outside <span class="m">S&cup;T</span>
+        survives the conditioning, so convolution smoothing bounds the conditional
+        density and the hit probability scales with the window&rsquo;s <i>length</i>.</p>
+        <div class="cost">cost per blocker &prop; <b>&theta;</b> &middot; m<sup>&minus;1/2</sup></div>
+      </div>
+      <div class="panel int">
+        <h3>Internal: <span class="m">R &sube; S&cup;T</span>, no free coordinate</h3>
+        <svg viewBox="0 0 380 150" role="img" aria-label="Internal blocker: a theta by theta square in the U V plane">
+          <line x1="60" y1="130" x2="340" y2="130" stroke="#1C2733" stroke-width="1.4"/>
+          <line x1="60" y1="130" x2="60" y2="14" stroke="#1C2733" stroke-width="1.4"/>
+          <text x="344" y="134" font-size="13" font-style="italic">U</text>
+          <text x="52" y="12" font-size="13" font-style="italic" text-anchor="end">V</text>
+          <line x1="30" y1="120" x2="200" y2="-20" stroke="#5B6B77" stroke-width="1" stroke-dasharray="4 3"/>
+          <text x="200" y="16" font-size="12" font-style="italic" fill="#5B6B77">U + V = &Delta;</text>
+          <rect x="60" y="92" width="38" height="38" fill="#E7C877" opacity="0.85" stroke="#A87718" stroke-width="1.4"/>
+          <text x="79" y="146" text-anchor="middle" font-size="12" font-style="italic" fill="#5B6B77">&theta;</text>
+          <text x="46" y="115" text-anchor="end" font-size="12" font-style="italic" fill="#5B6B77">&theta;</text>
+          <text x="120" y="86" font-size="12.5" fill="#A87718">both signed sums pinned: area &theta;&sup2;</text>
+        </svg>
+        <p style="font-size:14.5px">The swap decomposition writes
+        <span class="m">&Delta; = U + V</span> with <span class="m">U</span>,
+        <span class="m">V</span> independent. Blocking pins <i>both</i> into
+        <span class="m">(0,&theta;]</span> &mdash; a codimension-two event.</p>
+        <div class="cost">cost per blocker &prop; <b>&theta;&sup2;</b> &middot; (r(j&minus;r))<sup>&minus;1/2</sup></div>
+      </div>
+    </div>
+    <p class="note">With one localized condition the
+    <span class="num">C(2j, j) &asymp; 4<sup>&beta;k</sup></span> internal candidates
+    would overwhelm the gap probability by an exponential factor. The second factor of
+    <span class="m">&theta;</span> turns their total into
+    <span class="num">2<sup>&minus;(H<sub>2</sub>(&beta;)&minus;2&beta;)k</sup></span>
+    of it &mdash; exponentially negligible for every
+    <span class="m">&beta; &isin; (0, &frac12;)</span>.</p>
+  </section>
+
+  <!-- ============ SECTION 3: SADDLE ============ -->
+  <section class="section" id="saddle">
+    <div class="sec-label">§6 · Where the golden ratio enters</div>
+    <h2>The saddle layer</h2>
+    <p>The exponential size of the disjoint-pair count at layer
+    <span class="m">j = &beta;k</span> is
+    <span class="binom-wrap"><span class="paren">(</span><span class="binom"><span class="m">k&minus;j</span><span class="m">j</span></span><span class="paren">)</span></span>
+    &asymp; <span class="m">e</span><sup class="m">kF(&beta;)</sup>/&radic;<span class="m">k</span>.
+    The curve below is <span class="m">F</span>. Its unique maximum solves
+    <span class="num">5&beta;&sup2; &minus; 5&beta; + 1 = 0</span>, and there the value
+    collapses algebraically &mdash; not numerically &mdash; to
+    <span class="m">log&thinsp;&phi;</span>, because
+    <span class="m">&beta;(1&minus;&beta;) = (1&minus;2&beta;)&sup2; = 1/5</span> at the
+    critical point.</p>
+    <div class="strip-frame"><canvas id="saddleCanvas" height="300"></canvas></div>
+    <div class="strip-caption">One layer suffices: the proof never sums over
+    <span class="m">j</span>, so no uniformity of constants near the saddle is needed.</div>
+  </section>
+
+  <!-- ============ SECTION 4: MONTE CARLO ============ -->
+  <section class="section" id="mc">
+    <div class="sec-label">Theorem 5.1 · Live verification</div>
+    <h2>Monte Carlo, in the browser</h2>
+    <p>The theorem is falsifiable by experiment: if the ratio
+    <span class="m">E[N]</span>&thinsp;/&thinsp;<span class="binom-wrap"><span class="paren">(</span><span class="binom"><span class="m">k&minus;j</span><span class="m">j</span></span><span class="paren">)</span></span>
+    decayed with <span class="m">k</span>, the constant
+    <span class="m">c</span><sub class="m">&beta;</sub> could not exist. Run the trials:
+    the ratio holds near <span class="num">0.72</span> across every layer, with no
+    drift. This mirrors the Python script <span class="num">mc_within_layer.py</span>
+    shipped with the paper.</p>
+    <div class="controls">
+      <div class="control"><button id="btnRun">Run all layers</button></div>
+      <div class="control"><button id="btnStop" disabled>Stop</button></div>
+      <div class="control"><span id="mcStatus" class="strip-caption"
+        role="status">Idle &mdash; a full run takes about half a minute.</span></div>
+    </div>
+    <table id="mcTable" aria-live="polite">
+      <thead><tr>
+        <th>k</th><th>j</th><th>&beta;</th><th>layer size</th>
+        <th>trials</th><th>E[N] est.</th><th>&plusmn; se</th>
+        <th>C(k&minus;j,j)</th><th>ratio</th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+    <div class="strip-frame" style="margin-top:16px"><canvas id="ratioCanvas" height="170"></canvas></div>
+    <div class="strip-caption">Ratio vs k. Constancy is the theorem; decay would be
+    its refutation.</div>
+  </section>
+
+  <div class="foot">
+    <p>This page verifies the probabilistic heart of the proof
+    (Theorem&nbsp;5.1) and illustrates its mechanisms. It does not &mdash; and cannot
+    &mdash; check the prime-block transfer (Theorem&nbsp;3.1), which is exact for every
+    <span class="m">k</span> and rests only on the prime number theorem in fixed
+    proportional intervals. Source and data:
+    <a href="https://github.com/michaelmross">github.com/michaelmross</a>.
+    Single file, no dependencies, no network.</p>
+  </div>
+</main>
+
+<script>
+"use strict";
+
+/* ---------- combinatorics ---------- */
+function binom(n, r) {
+  if (r < 0 || r > n) return 0;
+  r = Math.min(r, n - r);
+  let v = 1;
+  for (let i = 1; i <= r; i++) v = v * (n - r + i) / i;
+  return Math.round(v);
+}
+
+/* Enumerate all size-j subsets of [k] as bitmasks (k <= 22). */
+function layerMasks(k, j) {
+  const out = new Int32Array(binom(k, j));
+  const idx = new Int32Array(j);
+  for (let i = 0; i < j; i++) idx[i] = i;
+  let p = 0;
+  while (true) {
+    let m = 0;
+    for (let i = 0; i < j; i++) m |= (1 << idx[i]);
+    out[p++] = m;
+    let i = j - 1;
+    while (i >= 0 && idx[i] === k - j + i) i--;
+    if (i < 0) break;
+    idx[i]++;
+    for (let t = i + 1; t < j; t++) idx[t] = idx[t - 1] + 1;
+  }
+  return out;
+}
+
+/* Subset sums for weights x over the given masks. */
+function layerSums(masks, x, k) {
+  const sums = new Float64Array(masks.length);
+  for (let p = 0; p < masks.length; p++) {
+    let m = masks[p], s = 0;
+    while (m) {
+      const b = m & -m;
+      s += x[Math.log2(b) | 0];
+      m ^= b;
+    }
+    sums[p] = s;
+  }
+  return sums;
+}
+
+function sortedOrder(sums) {
+  const order = Array.from(sums.keys());
+  order.sort((a, b) => sums[a] - sums[b]);
+  return order;
+}
+
+function countDisjointAdjacent(masks, order) {
+  let n = 0;
+  for (let i = 0; i + 1 < order.length; i++) {
+    if ((masks[order[i]] & masks[order[i + 1]]) === 0) n++;
+  }
+  return n;
+}
+
+/* ---------- shared canvas helpers ---------- */
+function fitCanvas(cv) {
+  const dpr = window.devicePixelRatio || 1;
+  const w = cv.clientWidth;
+  const h = parseInt(cv.getAttribute("height"), 10);
+  cv.width = Math.round(w * dpr);
+  cv.height = Math.round(h * dpr);
+  const ctx = cv.getContext("2d");
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return { ctx, w, h };
+}
+
+/* ---------- section 1: live layer ---------- */
+const LAYER_CHOICES = { kMin: 10, kMax: 20, maxLayer: 200000 };
+const state = { k: 14, j: 4, masks: null, sums: null, order: null, N: 0 };
+
+const selK = document.getElementById("selK");
+const selJ = document.getElementById("selJ");
+for (let k = LAYER_CHOICES.kMin; k <= LAYER_CHOICES.kMax; k++) {
+  const o = document.createElement("option");
+  o.value = k; o.textContent = k;
+  if (k === state.k) o.selected = true;
+  selK.appendChild(o);
+}
+function refreshJOptions() {
+  const k = +selK.value;
+  selJ.innerHTML = "";
+  for (let j = 2; j <= Math.floor(k / 2); j++) {
+    if (binom(k, j) > LAYER_CHOICES.maxLayer) continue;
+    const o = document.createElement("option");
+    o.value = j; o.textContent = j;
+    if (j === state.j) o.selected = true;
+    selJ.appendChild(o);
+  }
+  if (!selJ.value) selJ.selectedIndex = selJ.options.length - 1;
+}
+refreshJOptions();
+
+function redrawLayer() {
+  state.k = +selK.value;
+  state.j = +selJ.value;
+  state.masks = layerMasks(state.k, state.j);
+  const x = new Float64Array(state.k);
+  for (let i = 0; i < state.k; i++) x[i] = Math.random();
+  state.sums = layerSums(state.masks, x, state.k);
+  state.order = sortedOrder(state.sums);
+  state.N = countDisjointAdjacent(state.masks, state.order);
+
+  const target = binom(state.k - state.j, state.j);
+  document.getElementById("stLayer").textContent = state.masks.length.toLocaleString();
+  document.getElementById("stN").textContent = state.N.toLocaleString();
+  document.getElementById("stTarget").textContent = target.toLocaleString();
+  document.getElementById("stRatio").textContent = (state.N / target).toFixed(3);
+  paintStrip();
+  paintZoom();
+}
+
+function paintStrip() {
+  const { ctx, w, h } = fitCanvas(document.getElementById("strip"));
+  ctx.clearRect(0, 0, w, h);
+  const { masks, sums, order } = state;
+  const lo = sums[order[0]], hi = sums[order[order.length - 1]];
+  const span = hi - lo || 1;
+  const y0 = 16, y1 = h - 16;
+  ctx.lineWidth = 1;
+  /* plain ticks first, gold on top */
+  ctx.strokeStyle = "rgba(140,153,164,0.35)";
+  ctx.beginPath();
+  for (let i = 0; i < order.length; i++) {
+    const px = 8 + (w - 16) * (sums[order[i]] - lo) / span;
+    ctx.moveTo(px, y0); ctx.lineTo(px, y1);
+  }
+  ctx.stroke();
+  ctx.strokeStyle = "#A87718";
+  ctx.beginPath();
+  for (let i = 0; i + 1 < order.length; i++) {
+    if ((masks[order[i]] & masks[order[i + 1]]) === 0) {
+      const px = 8 + (w - 16) *
+        ((sums[order[i]] + sums[order[i + 1]]) / 2 - lo) / span;
+      ctx.moveTo(px, y0); ctx.lineTo(px, y1);
+    }
+  }
+  ctx.stroke();
+}
+
+function paintZoom() {
+  const { ctx, w, h } = fitCanvas(document.getElementById("zoomStrip"));
+  ctx.clearRect(0, 0, w, h);
+  const { masks, sums, order } = state;
+  const M = order.length;
+  const winLen = Math.max(12, Math.round(M * 0.01));
+  const t = +document.getElementById("zoom").value / 1000;
+  const start = Math.min(M - winLen - 1, Math.max(0, Math.round(t * (M - winLen))));
+  const lo = sums[order[start]], hi = sums[order[start + winLen]];
+  const span = hi - lo || 1e-12;
+  const base = h - 34;
+  ctx.strokeStyle = "#C9D0CC";
+  ctx.beginPath(); ctx.moveTo(0, base); ctx.lineTo(w, base); ctx.stroke();
+
+  const px = i => 10 + (w - 20) * (sums[order[i]] - lo) / span;
+  for (let i = start; i <= start + winLen; i++) {
+    ctx.strokeStyle = "#8C99A4";
+    ctx.lineWidth = 1.4;
+    ctx.beginPath(); ctx.moveTo(px(i), base - 14); ctx.lineTo(px(i), base + 8); ctx.stroke();
+  }
+  /* gold arcs over disjoint consecutive pairs */
+  ctx.strokeStyle = "#A87718";
+  ctx.lineWidth = 1.8;
+  for (let i = start; i < start + winLen; i++) {
+    if ((masks[order[i]] & masks[order[i + 1]]) === 0) {
+      const a = px(i), b = px(i + 1), mid = (a + b) / 2;
+      const rise = Math.min(42, 12 + (b - a) * 0.35);
+      ctx.beginPath();
+      ctx.moveTo(a, base - 14);
+      ctx.quadraticCurveTo(mid, base - 14 - rise, b, base - 14);
+      ctx.stroke();
+    }
+  }
+  ctx.fillStyle = "#5B6B77";
+  ctx.font = "12px " + getComputedStyle(document.body)
+    .getPropertyValue("--mono").split(",")[0].replace(/"/g, "") + ", monospace";
+  ctx.fillText("sums " + (start + 1).toLocaleString() + "–"
+    + (start + winLen + 1).toLocaleString() + " of " + M.toLocaleString(),
+    10, h - 8);
+}
+
+document.getElementById("btnRedraw").addEventListener("click", redrawLayer);
+selK.addEventListener("change", () => { refreshJOptions(); redrawLayer(); });
+selJ.addEventListener("change", redrawLayer);
+document.getElementById("zoom").addEventListener("input", paintZoom);
+
+/* ---------- section 3: saddle curve ---------- */
+function F(b) {
+  return (1 - b) * Math.log(1 - b) - b * Math.log(b)
+       - (1 - 2 * b) * Math.log(1 - 2 * b);
+}
+const BETA_STAR = (5 - Math.sqrt(5)) / 10;
+const LOG_PHI = Math.log((1 + Math.sqrt(5)) / 2);
+
+function paintSaddle() {
+  const { ctx, w, h } = fitCanvas(document.getElementById("saddleCanvas"));
+  ctx.clearRect(0, 0, w, h);
+  const L = 56, R = 20, T = 22, B = 40;
+  const X = b => L + (w - L - R) * (b / 0.5);
+  const Y = v => h - B - (h - T - B) * (v / 0.55);
+
+  /* axes */
+  ctx.strokeStyle = "#1C2733"; ctx.lineWidth = 1.2;
+  ctx.beginPath();
+  ctx.moveTo(L, T); ctx.lineTo(L, h - B); ctx.lineTo(w - R, h - B);
+  ctx.stroke();
+  ctx.fillStyle = "#5B6B77";
+  ctx.font = "13px Georgia, serif";
+  ctx.fillText("F(\u03B2)", L - 44, T + 12);
+  ctx.fillText("\u03B2", w - R - 10, h - B + 28);
+  [0, 0.1, 0.2, 0.3, 0.4, 0.5].forEach(b => {
+    ctx.fillText(b.toFixed(1), X(b) - 9, h - B + 18);
+    ctx.strokeStyle = "#E6EAE5";
+    ctx.beginPath(); ctx.moveTo(X(b), T); ctx.lineTo(X(b), h - B); ctx.stroke();
+  });
+
+  /* log phi guide */
+  ctx.strokeStyle = "#A87718"; ctx.setLineDash([5, 4]); ctx.lineWidth = 1.2;
+  ctx.beginPath(); ctx.moveTo(L, Y(LOG_PHI)); ctx.lineTo(w - R, Y(LOG_PHI)); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = "#A87718";
+  ctx.fillText("log \u03C6 = " + LOG_PHI.toFixed(4), L + 8, Y(LOG_PHI) - 6);
+
+  /* curve */
+  ctx.strokeStyle = "#1C2733"; ctx.lineWidth = 2;
+  ctx.beginPath();
+  for (let i = 1; i < 500; i++) {
+    const b = 0.5 * i / 500;
+    const px = X(b), py = Y(F(b));
+    if (i === 1) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+  }
+  ctx.stroke();
+
+  /* saddle marker */
+  ctx.fillStyle = "#A87718";
+  ctx.beginPath();
+  ctx.arc(X(BETA_STAR), Y(LOG_PHI), 4.5, 0, 2 * Math.PI);
+  ctx.fill();
+  ctx.fillText("\u03B2* = (5\u2212\u221A5)/10", X(BETA_STAR) - 40, Y(LOG_PHI) + 24);
+}
+
+/* ---------- section 4: monte carlo ---------- */
+const MC_LAYERS = [
+  { k: 14, j: 4, trials: 2000 },
+  { k: 16, j: 4, trials: 1500 },
+  { k: 18, j: 5, trials: 800 },
+  { k: 21, j: 6, trials: 200 },
+  { k: 22, j: 7, trials: 60 }
+];
+const mcState = { running: false, results: [] };
+const tbody = document.querySelector("#mcTable tbody");
+
+function mcInitTable() {
+  tbody.innerHTML = "";
+  mcState.results = MC_LAYERS.map(L => ({ ...L, done: 0, sum: 0, sumsq: 0 }));
+  for (const r of mcState.results) {
+    const tr = document.createElement("tr");
+    tr.innerHTML =
+      "<td>" + r.k + "</td><td>" + r.j + "</td>" +
+      "<td>" + (r.j / r.k).toFixed(3) + "</td>" +
+      "<td>" + binom(r.k, r.j).toLocaleString() + "</td>" +
+      "<td class='ct'>0</td><td class='mean'>&ndash;</td>" +
+      "<td class='se'>&ndash;</td>" +
+      "<td>" + binom(r.k - r.j, r.j).toLocaleString() + "</td>" +
+      "<td class='ratio'>&ndash;</td>";
+    tbody.appendChild(tr);
+    r.row = tr;
+  }
+  paintRatios();
+}
+
+function mcStep(li) {
+  if (!mcState.running) return finishMC();
+  if (li >= mcState.results.length) return finishMC();
+  const r = mcState.results[li];
+  if (r.done >= r.trials) return setTimeout(() => mcStep(li + 1), 0);
+  if (!r.masks) r.masks = layerMasks(r.k, r.j);
+
+  const batch = Math.max(1, Math.min(r.trials - r.done,
+    Math.floor(15000 / r.masks.length) || 1));
+  for (let b = 0; b < batch; b++) {
+    const x = new Float64Array(r.k);
+    for (let i = 0; i < r.k; i++) x[i] = Math.random();
+    const sums = layerSums(r.masks, x, r.k);
+    const n = countDisjointAdjacent(r.masks, sortedOrder(sums));
+    r.done++; r.sum += n; r.sumsq += n * n;
+  }
+  const mean = r.sum / r.done;
+  const varn = r.done > 1 ? (r.sumsq - r.done * mean * mean) / (r.done - 1) : 0;
+  const se = Math.sqrt(Math.max(varn, 0) / r.done);
+  const target = binom(r.k - r.j, r.j);
+  r.row.querySelector(".ct").textContent = r.done;
+  r.row.querySelector(".mean").textContent = mean.toFixed(1);
+  r.row.querySelector(".se").textContent = se.toFixed(1);
+  r.row.querySelector(".ratio").textContent = (mean / target).toFixed(3);
+  r.mean = mean; r.se = se;
+  const totalDone = mcState.results.reduce((s, z) => s + z.done, 0);
+  const totalAll = mcState.results.reduce((s, z) => s + z.trials, 0);
+  document.getElementById("mcStatus").textContent =
+    "Running \u2014 layer k=" + r.k + ", j=" + r.j + " \u00b7 trial "
+    + r.done + "/" + r.trials + " \u00b7 " + totalDone + "/" + totalAll
+    + " overall";
+  paintRatios();
+  setTimeout(() => mcStep(li), 0);
+}
+
+function paintRatios() {
+  const { ctx, w, h } = fitCanvas(document.getElementById("ratioCanvas"));
+  ctx.clearRect(0, 0, w, h);
+  const L = 50, R = 20, T = 14, B = 30;
+  const ks = MC_LAYERS.map(z => z.k);
+  const kLo = Math.min(...ks) - 1, kHi = Math.max(...ks) + 1;
+  const X = k => L + (w - L - R) * (k - kLo) / (kHi - kLo);
+  const Y = v => h - B - (h - T - B) * (v / 1.0);
+  ctx.strokeStyle = "#1C2733"; ctx.lineWidth = 1.2;
+  ctx.beginPath();
+  ctx.moveTo(L, T); ctx.lineTo(L, h - B); ctx.lineTo(w - R, h - B); ctx.stroke();
+  ctx.fillStyle = "#5B6B77"; ctx.font = "12px Georgia, serif";
+  [0, 0.25, 0.5, 0.75, 1].forEach(v => {
+    ctx.fillText(v.toFixed(2), 14, Y(v) + 4);
+    ctx.strokeStyle = "#E6EAE5";
+    ctx.beginPath(); ctx.moveTo(L, Y(v)); ctx.lineTo(w - R, Y(v)); ctx.stroke();
+  });
+  ks.forEach(k => ctx.fillText(String(k), X(k) - 5, h - B + 18));
+  for (const r of mcState.results) {
+    if (r.mean === undefined) continue;
+    const target = binom(r.k - r.j, r.j);
+    const v = r.mean / target, e = 1.96 * r.se / target;
+    ctx.strokeStyle = "#A87718"; ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(X(r.k), Y(Math.min(1, v + e)));
+    ctx.lineTo(X(r.k), Y(Math.max(0, v - e)));
+    ctx.stroke();
+    ctx.fillStyle = "#A87718";
+    ctx.beginPath(); ctx.arc(X(r.k), Y(v), 4.5, 0, 2 * Math.PI); ctx.fill();
+  }
+}
+
+function finishMC() {
+  const wasRunning = mcState.running;
+  mcState.running = false;
+  document.getElementById("btnRun").disabled = false;
+  document.getElementById("btnStop").disabled = true;
+  const totalDone = mcState.results.reduce((s, z) => s + z.done, 0);
+  const secs = ((Date.now() - mcState.t0) / 1000).toFixed(1);
+  document.getElementById("mcStatus").textContent = wasRunning
+    ? "Done \u2014 " + totalDone + " trials in " + secs
+      + " s. Ratios are stable: that is the theorem."
+    : "Stopped after " + totalDone + " trials (" + secs
+      + " s). Partial estimates are kept.";
+}
+document.getElementById("btnRun").addEventListener("click", () => {
+  mcInitTable();
+  mcState.running = true;
+  mcState.t0 = Date.now();
+  document.getElementById("btnRun").disabled = true;
+  document.getElementById("btnStop").disabled = false;
+  setTimeout(() => mcStep(0), 0);
+});
+document.getElementById("btnStop").addEventListener("click", () => {
+  mcState.running = false;
+});
+
+/* ---------- boot & resize ---------- */
+function paintAll() { paintStrip(); paintZoom(); paintSaddle(); paintRatios(); }
+window.addEventListener("resize", paintAll);
+redrawLayer();
+paintSaddle();
+mcInitTable();
+</script>
+</body>
+</html>

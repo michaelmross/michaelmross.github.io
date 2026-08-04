@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notes on the Proof — the golden-ratio lower bound</title>
+<style>
+  :root {
+    --paper: #F7F8F6;
+    --grid: #E6EAE5;
+    --ink: #1C2733;
+    --muted: #5B6B77;
+    --gold: #A87718;
+    --crimson: #9E3B36;
+    --rule: #C9D0CC;
+    --card: #FFFFFF;
+    --serif: "STIX Two Text", "Charter", "Georgia", "Times New Roman", serif;
+    --mono: "SF Mono", "Cascadia Mono", "Consolas", "Menlo", monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--paper);
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 28px 28px;
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 17px;
+    line-height: 1.6;
+  }
+  main { max-width: 760px; margin: 0 auto; padding: 48px 20px 90px; }
+  .eyebrow {
+    font-family: var(--mono); font-size: 12px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 14px;
+  }
+  h1 {
+    font-size: clamp(28px, 5vw, 40px); font-weight: 600;
+    letter-spacing: -0.01em; line-height: 1.14; margin-bottom: 12px;
+  }
+  h1 .phi { color: var(--gold); font-style: italic; }
+  .subtitle { color: var(--muted); font-style: italic; margin-bottom: 34px;
+              max-width: 620px; }
+  section { background: var(--card); border: 1px solid var(--rule);
+            border-radius: 4px; padding: 24px 28px 26px; margin-bottom: 26px;
+            box-shadow: 0 1px 0 rgba(28,39,51,0.04); }
+  .sec-label { font-family: var(--mono); font-size: 12px; letter-spacing: 0.12em;
+               color: var(--gold); text-transform: uppercase; margin-bottom: 6px; }
+  h2 { font-size: 22px; font-weight: 600; margin-bottom: 10px; }
+  p { margin-bottom: 12px; }
+  p:last-child { margin-bottom: 0; }
+  .m { font-style: italic; }
+  .num { font-family: var(--mono); font-size: 0.92em; font-style: normal; }
+  ol.steps { margin: 4px 0 8px 0; padding-left: 0; list-style: none;
+             counter-reset: step; }
+  ol.steps li { position: relative; padding: 7px 0 7px 44px;
+                border-bottom: 1px solid var(--grid); counter-increment: step; }
+  ol.steps li:last-child { border-bottom: none; }
+  ol.steps li::before {
+    content: counter(step); position: absolute; left: 0; top: 8px;
+    width: 26px; height: 26px; border: 1px solid var(--gold); border-radius: 50%;
+    color: var(--gold); font-family: var(--mono); font-size: 13px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .aside { border-left: 3px solid var(--gold); background: #FCFAF3;
+           padding: 12px 16px; margin: 14px 0; font-size: 15.5px; }
+  .aside.red { border-left-color: var(--crimson); background: #FBF5F4; }
+  dl.level { display: grid; grid-template-columns: max-content 1fr;
+             gap: 6px 20px; margin: 8px 0 4px; }
+  dl.level dt { font-family: var(--mono); font-size: 13px; color: var(--muted);
+                letter-spacing: 0.04em; padding-top: 2px; }
+  dl.level dd { margin: 0; }
+  a { color: var(--ink); }
+  .foot { font-size: 14px; color: var(--muted);
+          border-top: 1px solid var(--rule); padding-top: 16px; }
+  @media (max-width: 560px) { dl.level { grid-template-columns: 1fr; gap: 2px; }
+    dl.level dd { margin-bottom: 8px; } }
+</style>
+</head>
+<body>
+<main>
+  <div class="eyebrow">Notes · Erdős problem #1100</div>
+  <h1>Notes on the proof of the <span class="phi">&phi;</span><sup>k</sup> lower bound</h1>
+  <p class="subtitle">Companion notes to &ldquo;An Unconditional Golden-Ratio Lower
+  Bound for Coprime Adjacent Divisors of Squarefree Integers&rdquo; &mdash; what makes
+  the proof difficult, where its inventive step lies, and how to read it critically.</p>
+
+  <section>
+    <div class="sec-label">Overview</div>
+    <h2>One organizing idea</h2>
+    <p>The theorem proves that a naive heuristic is correct to within constants:
+    consecutive sums in a cardinality layer behave like independent random pairs, so a
+    <span class="num">C(k&minus;j,j)/C(k,j)</span> fraction of the layer&rsquo;s
+    adjacencies should be disjoint. The entire difficulty of the paper is that
+    <b>blockers</b> are the obstruction to this heuristic, and the proof&rsquo;s two
+    mechanisms are precisely the two ways a blocker can try to defeat it. Every note
+    below hangs on that frame.</p>
+    <p>The window scale makes the heuristic legible. The layer holds
+    <span class="num">C(k,j)</span> sums whose fluctuation scale is
+    &radic;<span class="m">j</span>, so the typical spacing between consecutive sums is
+    &radic;<span class="m">j</span>&thinsp;/&thinsp;<span class="num">C(k,j)</span>
+    &mdash; and the proof&rsquo;s window <span class="m">&theta;</span> is chosen at
+    exactly that spacing. The small-gap probability
+    <span class="num">P(|&Delta;| &le; &theta;) &asymp; 1/C(k,j)</span> is then not an
+    estimate but the statement that the pair lands within one typical gap of each
+    other.</p>
+  </section>
+
+  <section>
+    <div class="sec-label">Difficulty</div>
+    <h2>Seven ideas that must not lose the exponential scale</h2>
+    <p>The proof&rsquo;s difficulty comes from making several delicate ideas work
+    together without losing exponential precision at any stage:</p>
+    <ol class="steps">
+      <li>translating adjacent divisors into disjoint adjacent subset sums;</li>
+      <li>realizing the random-weight model with actual primes, without invoking any
+      shrinking-interval prime result;</li>
+      <li>separating the cardinality layers exactly, via
+      <span class="m">Q</span> &gt; (1+<span class="m">&eta;</span>)<sup class="m">k</sup>;</li>
+      <li>proving that a fixed disjoint pair is consecutive with probability of order
+      <span class="num">1/C(k,j)</span>;</li>
+      <li>splitting blockers into external and internal classes;</li>
+      <li>recognizing that internal blockers require a codimension-two estimate;</li>
+      <li>choosing the saddle layer so the combinatorial term has exponential base
+      exactly <span class="m">&phi;</span>.</li>
+    </ol>
+  </section>
+
+  <section>
+    <div class="sec-label">The inventive step</div>
+    <h2>Why internal blockers are the hard part</h2>
+    <p>The external-blocker estimate is fairly standard once formulated correctly: an
+    external <span class="m">R</span> keeps at least one coordinate outside
+    <span class="m">S&cup;T</span>, that coordinate survives the conditioning, and
+    convolution smoothing bounds the conditional density. For internal blockers this
+    route is not merely weaker &mdash; it is structurally unavailable. An internal
+    <span class="m">R</span> has no coordinate outside the pair, so after conditioning
+    on the endpoint sums there is no independent randomness left to convolve with.</p>
+    <div class="aside red">
+    <b>How badly the naive bound fails.</b> With one localized condition, each internal
+    blocker costs about <span class="m">&theta;</span>, and there are
+    <span class="num">C(2j,j) &asymp; 4<sup>&beta;k</sup></span> candidates. Their
+    total exceeds the gap probability by the exponential factor
+    <span class="num">4<sup>&beta;k</sup></span>. The internal class does not resist
+    the naive first moment; it overwhelms it.</div>
+    <p>The proof succeeds by changing mechanism, not by sharpening the old one. The
+    swap decomposition writes the gap as <span class="m">&Delta; = U + V</span> with
+    <span class="m">U</span> and <span class="m">V</span> independent signed sums, and
+    blocking pins <i>both</i> into <span class="m">(0,&theta;]</span>. One factor of
+    <span class="m">&theta;</span> becomes two, and the internal total drops to
+    <span class="num">2<sup>&minus;(H<sub>2</sub>(&beta;)&minus;2&beta;)k</sup></span>
+    of the gap probability. That single extra factor of <span class="m">&theta;</span>
+    is the entire difference between a proof and a false start, and it is the genuinely
+    inventive step.</p>
+    <div class="aside">
+    <b>A small miracle.</b>
+    <span class="num">H<sub>2</sub>(&beta;) &minus; 2&beta; &gt; 0</span> on all of
+    <span class="num">(0, 1/2)</span>, so the internal estimate imposes no constraint
+    on where the saddle may sit. The two halves of the proof never negotiate with each
+    other.</div>
+  </section>
+
+  <section>
+    <div class="sec-label">Discipline</div>
+    <h2>Quantifiers and the order of limits</h2>
+    <p>The proof is unusually sensitive to quantifiers. One must keep
+    <span class="m">k</span> fixed while taking <span class="m">Q</span> &rarr; &infin;,
+    then let <span class="m">&eta;</span> &rarr; 0, and only afterward study large
+    <span class="m">k</span>. The inequality of Theorem&nbsp;3.1 is exact for every
+    <span class="m">k</span> once the limits are done, so asymptotics in
+    <span class="m">k</span> enter only in Theorem&nbsp;5.1, where they belong.
+    Reversing or blurring those limits could silently introduce an unproved
+    prime-distribution assumption. As it stands, the number-theoretic input is the
+    prime number theorem in fixed proportional intervals and nothing more.</p>
+  </section>
+
+  <section>
+    <div class="sec-label">Exactness</div>
+    <h2>The saddle constant is algebraic, not numerical</h2>
+    <p>It is natural to assume <span class="m">F(&beta;*) = log&thinsp;&phi;</span> is
+    a coincidence verified to some precision. It is not. The critical equation is
+    <span class="num">5&beta;&sup2; &minus; 5&beta; + 1 = 0</span>, so at
+    <span class="m">&beta;*</span> one has
+    <span class="m">&beta;(1&minus;&beta;) = (1&minus;2&beta;)&sup2; = 1/5</span>.
+    Substituting, <span class="m">F(&beta;*)</span> collapses in three lines to
+    <span class="m">log(1&minus;&beta;*) + &frac12;&thinsp;log&thinsp;5 =
+    log((&radic;5+1)/2)</span>. The golden ratio enters through this identity, not
+    through the Fibonacci sum <span class="num">&Sigma;<sub>j</sub> C(k&minus;j,j) =
+    F<sub>k+1</sub></span>, which the single-layer proof never uses.</p>
+  </section>
+
+  <section>
+    <div class="sec-label">For the referee</div>
+    <h2>Where to read with hostility</h2>
+    <p>The proof is plausible-looking even at points where a small mistake would
+    destroy the conclusion, so referee difficulty is substantial. Three joints carry
+    the load and reward hostile reading:</p>
+    <ol class="steps">
+      <li>the order of limits and the total-variation coupling in Section&nbsp;3 &mdash;
+      this is where a hidden prime-distribution assumption would live, and the fixed-<span class="m">k</span>
+      discipline is what excludes it;</li>
+      <li>the independence of <span class="m">U</span> and <span class="m">V</span>,
+      which rests entirely on the swap algebra producing disjoint coordinate supports,
+      and should be verified by hand;</li>
+      <li>the fact that only the <i>upper</i> bound on the hypergeometric blocker sum
+      is ever used &mdash; a matching lower bound appears nowhere and is not needed.</li>
+    </ol>
+    <p>Everything else is standard machinery correctly assembled.</p>
+  </section>
+
+  <section>
+    <div class="sec-label">Verification</div>
+    <h2>The theorem is checkable by experiment</h2>
+    <p>Theorem&nbsp;5.1 admits direct Monte Carlo falsification: draw the weights,
+    enumerate the layer, sort, and count disjoint consecutive pairs. If the ratio
+    <span class="m">E[N]</span>&thinsp;/&thinsp;<span class="num">C(k&minus;j,j)</span>
+    decayed with <span class="m">k</span>, the theorem&rsquo;s constant could not
+    exist. In practice the ratio holds near <span class="num">0.72</span> for
+    <span class="m">k</span> from 14 to 29 (layers up to 4.3 million subsets), with no
+    drift. The repository ships both a Python script
+    (<span class="num">mc_within_layer.py</span>) and an
+    <a href="within_layer_companion.html">interactive browser companion</a> that runs
+    the experiment live and draws the layer itself. The stability of the constant also
+    suggests it converges to an explicit limit &mdash; an open question the paper does
+    not address.</p>
+  </section>
+
+  <section>
+    <div class="sec-label">Assessment</div>
+    <h2>Level and character</h2>
+    <dl class="level">
+      <dt>Conceptual difficulty</dt><dd>High.</dd>
+      <dt>Technical difficulty</dt><dd>Moderate to high.</dd>
+      <dt>Length</dt><dd>Comparatively short for what it proves.</dd>
+      <dt>Prerequisites</dt><dd>Analytic and combinatorial number theory, probability,
+      Fourier density estimates, asymptotic combinatorics.</dd>
+      <dt>Referee difficulty</dt><dd>Substantial, for the reasons above.</dd>
+    </dl>
+    <p style="margin-top:12px">This is not a proof built on a very deep external
+    theorem. It is a difficult assembly proof: the challenge is discovering the right
+    representation, the right probabilistic scale, and the right decomposition so that
+    tools no stronger than the prime number theorem and a local limit estimate become
+    sufficient.</p>
+  </section>
+
+  <div class="foot">
+    <p>M.&thinsp;M. Ross, 2026. These notes accompany the paper and its verification
+    materials at <a href="https://github.com/michaelmross">github.com/michaelmross</a>.
+    Improves the Erd&#337;s&ndash;Simonovits lower bound
+    (&radic;2&thinsp;+&thinsp;<span class="m">o</span>(1))<sup class="m">k</sup> for
+    Erd&#337;s problem
+    <a href="https://www.erdosproblems.com/1100">#1100</a>.</p>
+  </div>
+</main>
+</body>
+</html>
