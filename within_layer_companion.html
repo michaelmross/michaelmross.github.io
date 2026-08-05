@@ -364,10 +364,16 @@ function countDisjointAdjacent(masks, order) {
 /* ---------- shared canvas helpers ---------- */
 function fitCanvas(cv) {
   const dpr = window.devicePixelRatio || 1;
+  /* Cache the design height once: cv.height writes back to the height
+     attribute, so re-reading it each call would compound by dpr on every
+     repaint (geometric growth on retina/zoomed displays). */
+  if (!cv.dataset.baseHeight) cv.dataset.baseHeight = cv.getAttribute("height");
+  const h = parseInt(cv.dataset.baseHeight, 10);
+  cv.style.height = h + "px";   /* pin layout height in CSS pixels */
   const w = cv.clientWidth;
-  const h = parseInt(cv.getAttribute("height"), 10);
-  cv.width = Math.round(w * dpr);
-  cv.height = Math.round(h * dpr);
+  const pw = Math.round(w * dpr), ph = Math.round(h * dpr);
+  if (cv.width !== pw) cv.width = pw;
+  if (cv.height !== ph) cv.height = ph;
   const ctx = cv.getContext("2d");
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   return { ctx, w, h };
