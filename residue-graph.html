@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The residue graph of the accelerated Collatz map — an interactive companion</title>
+<link href="./favicon.png" rel="icon" type="image/png"/>
+<meta name="description" content="Interactive notes on the nondeterministic residue graph G(K,M) of the accelerated Collatz map: coset fans, bit-reversed ordering, and why finite quotients cannot exclude cycles.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FAFAF7; --ink:#1A1B1E; --ink-2:#5A594F; --ink-3:#8A8880;
+  --rule:#E3E1D8; --card:#FFFFFF;
+  --fam-d:#1D9E75; --fam-b:#7F77DD; --fam-c:#D85A30; --dead:#8A8880;
+  --fam-d-deep:#085041; --fam-b-deep:#3C3489; --fam-c-deep:#712B13;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --paper:#141414; --ink:#E8E6E0; --ink-2:#B0AEA4; --ink-3:#7C7A72;
+    --rule:#2C2C29; --card:#1C1C1B;
+    --fam-d:#3FBE93; --fam-b:#9C95E8; --fam-c:#E67B52; --dead:#6E6C65;
+    --fam-d-deep:#9FE1CB; --fam-b-deep:#CECBF6; --fam-c-deep:#F5C4B3;
+  }
+}
+*{box-sizing:border-box}
+html{background:var(--paper)}
+body{
+  margin:0; color:var(--ink);
+  font-family:"Source Serif 4", Georgia, "Times New Roman", serif;
+  font-size:17px; line-height:1.65;
+}
+.wrap{max-width:46rem; margin:0 auto; padding:0 1.25rem 5rem}
+header{padding:3.5rem 0 1.5rem}
+.eyebrow{
+  font-family:"IBM Plex Mono", ui-monospace, monospace;
+  font-size:12px; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--ink-3); margin:0 0 1.25rem;
+}
+h1{
+  font-family:"Fraunces", Georgia, serif; font-weight:500;
+  font-size:clamp(1.9rem, 5vw, 2.7rem); line-height:1.12;
+  margin:0 0 .75rem; letter-spacing:-.01em;
+}
+.byline{font-size:15px; color:var(--ink-2); margin:0}
+.byline a{color:inherit}
+.lede{font-size:1.12em; color:var(--ink); margin:1.5rem 0 0}
+h2{
+  font-family:"Fraunces", Georgia, serif; font-weight:500;
+  font-size:1.35rem; margin:3rem 0 .8rem; line-height:1.25;
+}
+h2 .s{color:var(--ink-3); font-weight:400; margin-right:.5em}
+p{margin:0 0 1rem}
+a{color:inherit; text-decoration-color:var(--ink-3); text-underline-offset:2px}
+a:hover{text-decoration-color:var(--ink)}
+code, .m{
+  font-family:"IBM Plex Mono", ui-monospace, monospace;
+  font-size:.86em;
+}
+code{background:none; color:inherit}
+em{font-style:italic}
+sup,sub{line-height:0}
+.famD{color:var(--fam-d); font-weight:600}
+.famB{color:var(--fam-b); font-weight:600}
+.famC{color:var(--fam-c); font-weight:600}
+@media (prefers-color-scheme: light){
+  .famD{color:var(--fam-d-deep)} .famB{color:var(--fam-b-deep)} .famC{color:var(--fam-c-deep)}
+}
+figure{margin:2.25rem 0}
+.viz{
+  background:var(--card); border:1px solid var(--rule); border-radius:10px;
+  padding:1.1rem 1.1rem 0.9rem;
+}
+.controls{display:flex; align-items:center; gap:18px; flex-wrap:wrap; margin:0 0 .7rem}
+.controls label{
+  font-family:"IBM Plex Mono", ui-monospace, monospace; font-size:12.5px;
+  color:var(--ink-2); display:flex; align-items:center; gap:8px;
+}
+select{
+  font-family:"IBM Plex Mono", ui-monospace, monospace; font-size:13px;
+  color:var(--ink); background:var(--paper); border:1px solid var(--rule);
+  border-radius:6px; padding:5px 8px;
+}
+select:focus-visible{outline:2px solid var(--fam-b); outline-offset:1px}
+#stats{
+  font-family:"IBM Plex Mono", ui-monospace, monospace;
+  font-size:12.5px; color:var(--ink-3); margin-left:auto;
+}
+.legend{
+  display:flex; flex-wrap:wrap; gap:14px; margin:0 0 .5rem;
+  font-family:"IBM Plex Mono", ui-monospace, monospace; font-size:12px; color:var(--ink-2);
+}
+.legend span{display:flex; align-items:center; gap:5px}
+.dot{width:9px; height:9px; border-radius:50%; display:inline-block}
+canvas{width:100%; display:block; border-radius:6px; cursor:crosshair; touch-action:none}
+canvas:focus-visible{outline:2px solid var(--fam-b); outline-offset:2px}
+#info{
+  font-family:"IBM Plex Mono", ui-monospace, monospace;
+  font-size:12.5px; line-height:1.8; color:var(--ink-2);
+  border-top:1px solid var(--rule); margin-top:.9rem; padding-top:.6rem;
+  min-height:3.4em; white-space:pre-wrap;
+}
+#info b{color:var(--ink); font-weight:500}
+figcaption{font-size:14px; color:var(--ink-2); margin-top:.7rem; line-height:1.55}
+table{
+  border-collapse:collapse; width:100%; margin:1.25rem 0;
+  font-family:"IBM Plex Mono", ui-monospace, monospace; font-size:13px;
+}
+th{
+  text-align:right; font-weight:500; color:var(--ink-2);
+  border-bottom:1px solid var(--ink-3); padding:4px 10px;
+}
+td{text-align:right; padding:4px 10px; border-bottom:1px solid var(--rule); color:var(--ink)}
+th:first-child, td:first-child{text-align:left; padding-left:0}
+.refs{font-size:15px}
+.refs ol{padding-left:1.3rem; margin:0}
+.refs li{margin:0 0 .6rem}
+footer{
+  margin-top:4rem; padding-top:1.25rem; border-top:1px solid var(--rule);
+  font-size:14px; color:var(--ink-3);
+  font-family:"IBM Plex Mono", ui-monospace, monospace;
+}
+noscript p{
+  background:var(--card); border:1px solid var(--rule); border-radius:8px;
+  padding:1rem; font-size:15px;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">naturalnumbers.org · working notes · august 2026</p>
+  <h1>The residue graph of the accelerated Collatz map</h1>
+  <p class="byline">Michael M. Ross · <a href="mailto:michaelmross@cantab.net">michaelmross@cantab.net</a></p>
+  <p class="lede">A finite quotient of the Collatz dynamics, drawn in its own metric. Every node
+  below is an odd residue class modulo 2<sup><i>M</i></sup>; every edge is a step of the map that
+  some integer in the class can take. Laid out 2-adically, the graph's coset structure becomes
+  visible geometry &mdash; and so does the reason no such finite graph can rule out cycles.</p>
+</header>
+
+<h2><span class="s">§1</span>The map and the partition</h2>
+<p>Collapse the even steps of the Collatz iteration and the dynamics live on odd integers under
+the accelerated map</p>
+<p style="text-align:center"><code>U(x) = (3x+1) / 2<sup>a(x)</sup></code>,&emsp;<code>a(x) = v<sub>2</sub>(3x+1)</code>,</p>
+<p>where <code>v<sub>2</sub></code> is the 2-adic valuation. The exponent <code>a(x)</code> is
+determined by <code>x mod 8</code>, which partitions the odd integers into three families:
+<span class="famD">D = {4n+3}</span> with <code>a = 1</code>,
+<span class="famB">B = {8n+1}</span> with <code>a = 2</code>, and
+<span class="famC">C = {8n+5}</span> with <code>a &ge; 3</code> &mdash; the <em>spikes</em>,
+where deep powers of two divide out at once. These three colors are the only colors on this page.</p>
+
+<h2><span class="s">§2</span>The graph G<sub>K,M</sub></h2>
+<p>Fix a modulus 2<sup><i>M</i></sup> and an exponent cap <code>max_a = K+3</code>. The graph
+<code>G<sub>K,M</sub></code> has a node for each odd residue <code>r mod 2<sup>M</sup></code> and
+an edge <code>r &rarr; s</code> whenever some integer <code>x &equiv; r</code> with
+<code>a(x) &le; max_a</code> has <code>U(x) &equiv; s</code>. The key point is that this graph is
+<em>nondeterministic</em>: knowing <code>x mod 2<sup>M</sup></code> determines
+<code>U(x)</code> only modulo <code>2<sup>M&minus;a</sup></code>, because the division by
+<code>2<sup>a</sup></code> consumes <code>a</code> bits. So each node has not one successor but a
+full coset of <code>2<sup>a</sup></code> of them &mdash; the top <code>a</code> bits of the target
+are free, fixed by bits of <code>x</code> the residue never saw. Any genuine cycle of integers
+with exponents <code>&le; max_a</code> projects to a directed cycle here; that is the sense in
+which the graph could, in principle, exclude cycles &mdash; if it were acyclic.</p>
+
+<figure>
+<div class="viz">
+  <div class="controls">
+    <label for="msel">modulus 2<sup>M</sup>
+      <select id="msel" aria-label="Choose the modulus exponent M">
+        <option value="7">M = 7</option>
+        <option value="8">M = 8</option>
+        <option value="9" selected>M = 9</option>
+        <option value="10">M = 10</option>
+        <option value="11">M = 11</option>
+        <option value="12">M = 12</option>
+      </select>
+    </label>
+    <label for="osel">ordering
+      <select id="osel" aria-label="Choose the node ordering">
+        <option value="bitrev" selected>bit-reversed</option>
+        <option value="natural">natural</option>
+      </select>
+    </label>
+    <span id="stats"></span>
+  </div>
+  <div class="legend" aria-hidden="true">
+    <span><span class="dot" style="background:var(--fam-d)"></span>D&ensp;a = 1</span>
+    <span><span class="dot" style="background:var(--fam-b)"></span>B&ensp;a = 2</span>
+    <span><span class="dot" style="background:var(--fam-c)"></span>C&ensp;spike, a &ge; 3</span>
+    <span><span class="dot" style="background:var(--dead)"></span>outside giant SCC</span>
+  </div>
+  <canvas id="cv" tabindex="0" role="img"
+    aria-label="Circular graph of odd residues. Nodes are colored by family and edges fan out to 2-adic cosets. Hover or use arrow keys to inspect a node."></canvas>
+  <div id="info">hover a node &mdash; or focus the circle and use &larr; &rarr; &mdash; to inspect its residue, exponent, and target coset.</div>
+</div>
+<figcaption>The graph <code>G<sub>K,M</sub></code> with <code>K = 7</code>
+(<code>max_a = 10</code>). Each node's out-edges land on one 2-adic coset; in bit-reversed
+ordering a coset is a contiguous arc, so fan width <em>is</em> the exponent. Switch to natural
+ordering to see the same graph without its metric.</figcaption>
+</figure>
+<noscript><p>The figure on this page is computed live in the browser and needs JavaScript.
+The same graph can be generated with <code>residue_graph.py</code> from the repository linked
+below.</p></noscript>
+
+<h2><span class="s">§3</span>Reading the picture</h2>
+<p>Hover any node. A <span class="famD">teal</span> node (family D, <code>a = 1</code>) throws a
+tight fan of 2 targets; a <span class="famB">violet</span> node (B, <code>a = 2</code>) a fan of
+4; a <span class="famC">coral</span> spike sprays 8, 16, 32 or more. The inspector under the
+circle shows why: the target residues agree in their low <code>M&minus;a</code> bits and differ
+freely in the top <code>a</code> &mdash; one congruence class, drawn as one arc. This works
+because the nodes are placed in <em>bit-reversed</em> order, which makes 2-adically close
+residues neighbors on the circle: distance on the circle approximates distance in
+<code>&#x2124;<sub>2</sub></code>. In the natural (archimedean) ordering, the identical edge set
+collapses into an undifferentiated chord tangle. The comparison is the point: this object has a
+geometry, and it is not the geometry of the number line.</p>
+
+<h2><span class="s">§4</span>Recurrence, and what finite graphs cannot show</h2>
+<p>If <code>G<sub>K,M</sub></code> were acyclic away from the fixed point at 1, bounded-exponent
+Collatz cycles would be excluded. It is nowhere near acyclic. At every modulus tested the graph
+has one giant strongly connected component containing all but a vanishing sliver of nodes
+&mdash; the gray stragglers, which are exactly the residue classes whose exponent exceeds
+<code>max_a</code> (they emit no edges under the cap) together with the nodes stranded behind
+them, <code>(M&minus;9)&middot;2<sup>M&minus;12</sup></code> in all for <code>K = 7</code>:</p>
+<table>
+<caption class="eyebrow" style="caption-side:top; text-align:left; margin-bottom:.4rem">giant SCC across moduli, K = 7</caption>
+<thead><tr><th scope="col">M</th><th scope="col">nodes</th><th scope="col">giant SCC</th><th scope="col">outside</th></tr></thead>
+<tbody>
+<tr><td>11</td><td>1,024</td><td>1,023</td><td>1</td></tr>
+<tr><td>12</td><td>2,048</td><td>2,045</td><td>3</td></tr>
+<tr><td>13</td><td>4,096</td><td>4,088</td><td>8</td></tr>
+<tr><td>14</td><td>8,192</td><td>8,172</td><td>20</td></tr>
+<tr><td>15</td><td>16,384</td><td>16,336</td><td>48</td></tr>
+<tr><td>16</td><td>32,768</td><td>32,656</td><td>112</td></tr>
+<tr><td>17</td><td>65,536</td><td>65,280</td><td>256</td></tr>
+<tr><td>18</td><td>131,072</td><td>130,496</td><td>576</td></tr>
+<tr><td>19</td><td>262,144</td><td>260,864</td><td>1,280</td></tr>
+<tr><td>20</td><td>524,288</td><td>521,472</td><td>2,816</td></tr>
+</tbody>
+</table>
+<p>There is a tempting shortcut here, and it is wrong. Treat each residue as an integer, give it
+the single successor <code>U(r) mod 2<sup>M</sup></code>, and the resulting <em>deterministic</em>
+graph really is acyclic at these parameters. But that graph omits edges a genuine cycle would
+use: an actual integer's successor residue is only pinned down modulo
+<code>2<sup>M&minus;a</sup></code>, and the deterministic quotient silently picks one of the
+<code>2<sup>a</sup></code> candidates. Its acyclicity is an artifact of thrown-away fan width
+&mdash; each fan above is exactly what it discards. The sound graph is the nondeterministic one,
+and the sound graph is recurrent. Full statements, proofs, and the wider program are in the
+paper&nbsp;[1].</p>
+
+<h2><span class="s">§5</span>Reproduce it</h2>
+<p>Everything on this page is computed in your browser from the definitions above &mdash; the
+graph, the strongly connected components, the layout. The same construction as a standalone
+script, <code>residue_graph.py</code>, lives in the repository&nbsp;[3]; the table reproduces
+with</p>
+<p><code>for M in $(seq 11 20); do python3 residue_graph.py 7 $M; done</code></p>
+
+<div class="refs">
+<h2><span class="s">§6</span>References</h2>
+<ol>
+<li>M. M. Ross, <em>Spike structures and 2-adic transition laws in the accelerated Collatz map</em>,
+Zenodo (2026). <a href="https://doi.org/10.5281/zenodo.21049703">doi:10.5281/zenodo.21049703</a></li>
+<li>M. M. Ross, <em>Loop structure of Collatz-type functions 3x+n: a conjugacy theorem and powers
+of three</em>, Zenodo (2026). <a href="https://doi.org/10.5281/zenodo.20545164">doi:10.5281/zenodo.20545164</a></li>
+<li>Code repository: <a href="https://github.com/michaelmross/Collatz">github.com/michaelmross/Collatz</a></li>
+<li>M. M. Ross, earlier structural notes (2023):
+<a href="https://doi.org/10.6084/m9.figshare.24778641">doi:10.6084/m9.figshare.24778641</a>,
+<a href="https://doi.org/10.6084/m9.figshare.24778536">doi:10.6084/m9.figshare.24778536</a></li>
+<li>D. J. Bernstein, <em>A non-iterative 2-adic statement of the 3n+1 conjecture</em>,
+Proc. Amer. Math. Soc. 121 (1994), 405&ndash;408 &mdash; the 2-adic conjugacy behind the
+recurrence heuristic of §4.</li>
+</ol>
+</div>
+
+<footer>Single file, no dependencies, no network. Built with Claude Fable 5.</p></footer>
+
+</div>
+<script>
+(function(){
+var cv=document.getElementById('cv');
+var info=document.getElementById('info');
+var stats=document.getElementById('stats');
+var K=7,MAXA=K+3;
+var G=null,hover=-1,order='bitrev';
+function css(name){return getComputedStyle(document.documentElement).getPropertyValue(name).trim();}
+var PAL={};
+function loadPal(){
+  PAL.node=[css('--fam-d'),css('--fam-b'),css('--fam-c')];
+  PAL.dead=css('--dead');
+  PAL.edge=PAL.node.map(function(h){
+    var r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=parseInt(h.slice(5,7),16);
+    return 'rgba('+r+','+g+','+b+',';
+  });
+}
+function fam(a){return a===1?0:(a===2?1:2);}
+function v2(n){var k=0;while((n&1)===0){n>>=1;k++;}return k;}
+function bin(n,w){var s=n.toString(2);while(s.length<w)s='0'+s;return s;}
+function build(M){
+  var mod=1<<M,nodes=[],idx={},i,r;
+  for(r=1;r<mod;r+=2){idx[r]=nodes.length;nodes.push(r);}
+  var N=nodes.length,adj=[],base=new Int32Array(N),expo=new Int32Array(N);
+  for(i=0;i<N;i++){
+    r=nodes[i];
+    var t=(3*r+1)%mod,out=[];expo[i]=-1;base[i]=-1;
+    if(t!==0){
+      var a=v2(t);
+      if(a<=MAXA){
+        expo[i]=a;
+        var b0=((3*r+1)>>a)%(mod>>a),step=mod>>a;
+        base[i]=b0;
+        for(var k2=0;k2<(1<<a);k2++)out.push(idx[(b0+k2*step)%mod]);
+      }
+    }
+    adj.push(out);
+  }
+  var low=new Int32Array(N),num=new Int32Array(N),comp=new Int32Array(N),onstk=new Uint8Array(N);
+  for(i=0;i<N;i++){num[i]=-1;comp[i]=-1;}
+  var cnt=0,nc=0,stk=[],sizes=[];
+  for(var s=0;s<N;s++){
+    if(num[s]!==-1)continue;
+    var call=[[s,0]];
+    while(call.length){
+      var frm=call[call.length-1],u=frm[0];
+      if(frm[1]===0){num[u]=cnt;low[u]=cnt;cnt++;stk.push(u);onstk[u]=1;}
+      var advanced=false;
+      while(frm[1]<adj[u].length){
+        var w=adj[u][frm[1]];frm[1]++;
+        if(num[w]===-1){call.push([w,0]);advanced=true;break;}
+        else if(onstk[w]&&num[w]<low[u])low[u]=num[w];
+      }
+      if(advanced)continue;
+      if(low[u]===num[u]){
+        var sz=0;
+        for(;;){var w2=stk.pop();onstk[w2]=0;comp[w2]=nc;sz++;if(w2===u)break;}
+        sizes.push(sz);nc++;
+      }
+      call.pop();
+      if(call.length){var p=call[call.length-1][0];if(low[u]<low[p])low[p]=low[u];}
+    }
+  }
+  var big=0,c;
+  for(c=0;c<sizes.length;c++)if(sizes[c]>sizes[big])big=c;
+  var ec=0;
+  for(i=0;i<N;i++)ec+=adj[i].length;
+  return {M:M,mod:mod,nodes:nodes,adj:adj,base:base,expo:expo,comp:comp,big:big,bigsz:sizes[big],N:N,ec:ec};
+}
+function angleOf(i){
+  var r=G.nodes[i],M=G.M,k=(r>>1),p=0;
+  if(order==='bitrev'){for(var b=0;b<M-1;b++)p=(p<<1)|((k>>b)&1);}else p=k;
+  return 2*Math.PI*p/G.N-Math.PI/2;
+}
+function draw(){
+  var dpr=window.devicePixelRatio||1,W=cv.clientWidth||600,H=W;
+  cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);cv.style.height=H+'px';
+  var ctx=cv.getContext('2d');
+  ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,H);
+  var cx=W/2,cy=H/2,R=W/2-12,i,j,th;
+  var X=new Float32Array(G.N),Y=new Float32Array(G.N);
+  for(i=0;i<G.N;i++){th=angleOf(i);X[i]=cx+R*Math.cos(th);Y[i]=cy+R*Math.sin(th);}
+  var dense=G.N>600,al=dense?'0.05)':'0.12)';
+  ctx.lineWidth=dense?0.5:0.9;
+  for(i=0;i<G.N;i++){
+    if(i===hover)continue;
+    var o=G.adj[i];
+    if(!o.length)continue;
+    ctx.strokeStyle=PAL.edge[fam(G.expo[i])]+al;
+    ctx.beginPath();
+    for(var e=0;e<o.length;e++){
+      j=o[e];
+      ctx.moveTo(X[i],Y[i]);
+      ctx.quadraticCurveTo(cx+(X[i]+X[j]-2*cx)*0.18,cy+(Y[i]+Y[j]-2*cy)*0.18,X[j],Y[j]);
+    }
+    ctx.stroke();
+  }
+  if(hover>=0&&G.adj[hover].length){
+    var oh=G.adj[hover],fh=fam(G.expo[hover]);
+    ctx.lineWidth=1.6;ctx.strokeStyle=PAL.edge[fh]+'0.9)';
+    ctx.beginPath();
+    for(var e2=0;e2<oh.length;e2++){
+      j=oh[e2];
+      ctx.moveTo(X[hover],Y[hover]);
+      ctx.quadraticCurveTo(cx+(X[hover]+X[j]-2*cx)*0.18,cy+(Y[hover]+Y[j]-2*cy)*0.18,X[j],Y[j]);
+    }
+    ctx.stroke();
+    ctx.fillStyle=PAL.edge[fh]+'0.9)';
+    for(var e3=0;e3<oh.length;e3++){
+      j=oh[e3];
+      ctx.beginPath();ctx.arc(X[j],Y[j],3.5,0,7);ctx.fill();
+    }
+  }
+  var nr=G.N>1500?1.5:(G.N>600?2.2:3.5);
+  for(i=0;i<G.N;i++){
+    var f2=G.expo[i]>=0?fam(G.expo[i]):0;
+    ctx.fillStyle=(G.comp[i]===G.big)?PAL.node[f2]:PAL.dead;
+    ctx.beginPath();ctx.arc(X[i],Y[i],i===hover?nr+2.5:nr,0,7);ctx.fill();
+  }
+  G.X=X;G.Y=Y;
+  stats.textContent=G.N+' nodes · '+G.ec.toLocaleString()+' edges · giant SCC '+G.bigsz+'/'+G.N;
+}
+function describe(i){
+  if(i<0){info.innerHTML='hover a node &mdash; or focus the circle and use &larr; &rarr; &mdash; to inspect its residue, exponent, and target coset.';return;}
+  var r=G.nodes[i],M=G.M;
+  if(G.expo[i]<0){
+    info.innerHTML='<b>x &equiv; '+r+'</b> = '+bin(r,M)+'&#8322;  (mod 2^'+M+')\n'
+      +'a(x) &gt; max_a = '+MAXA+' on this class &mdash; no edges under the exponent cap; outside the giant SCC.';
+    return;
+  }
+  var a=G.expo[i],b=G.base[i];
+  info.innerHTML='<b>x &equiv; '+r+'</b> = '+bin(r,M)+'&#8322;  (mod 2^'+M+') · family '+['D','B','C'][fam(a)]+' · a = '+a+' · out-degree 2^'+a+' = '+G.adj[i].length+'\n'
+    +'targets &equiv; <b>'+b+'</b> = '+bin(b,M-a)+'&#8322;  (mod 2^'+(M-a)+') &mdash; low '+(M-a)+' bits fixed, top '+a+' bits free: one coset, one arc.';
+}
+function setHover(i){hover=i;draw();describe(i);}
+function rebuild(){loadPal();G=build(parseInt(document.getElementById('msel').value,10));setHover(-1);}
+document.getElementById('msel').addEventListener('change',rebuild);
+document.getElementById('osel').addEventListener('change',function(e){order=e.target.value;draw();});
+function nearest(mx,my){
+  var bi=-1,bd=196;
+  for(var i=0;i<G.N;i++){
+    var dx=G.X[i]-mx,dy=G.Y[i]-my,d=dx*dx+dy*dy;
+    if(d<bd){bd=d;bi=i;}
+  }
+  return bi;
+}
+function pointer(e){
+  var rc=cv.getBoundingClientRect();
+  var px=(e.touches?e.touches[0].clientX:e.clientX)-rc.left;
+  var py=(e.touches?e.touches[0].clientY:e.clientY)-rc.top;
+  var bi=nearest(px,py);
+  if(bi!==hover)setHover(bi);
+}
+cv.addEventListener('mousemove',pointer);
+cv.addEventListener('touchstart',function(e){pointer(e);},{passive:true});
+cv.addEventListener('touchmove',function(e){pointer(e);},{passive:true});
+cv.addEventListener('mouseleave',function(){setHover(-1);});
+cv.addEventListener('keydown',function(e){
+  if(e.key!=='ArrowRight'&&e.key!=='ArrowLeft')return;
+  e.preventDefault();
+  var step=e.key==='ArrowRight'?1:-1;
+  setHover(((hover<0?0:hover)+step+G.N)%G.N);
+});
+window.addEventListener('resize',draw);
+if(window.matchMedia){
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(){loadPal();draw();});
+}
+rebuild();
+})();
+</script>
+</body>
+</html>
