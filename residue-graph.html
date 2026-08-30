@@ -118,7 +118,7 @@ th:first-child, td:first-child{text-align:left; padding-left:0}
 .refs li{margin:0 0 .6rem}
 footer{
   margin-top:4rem; padding-top:1.25rem; border-top:1px solid var(--rule);
-  font-size:14px; color:var(--ink-3);
+  font-size:12px; color:var(--ink-3);
   font-family:"IBM Plex Mono", ui-monospace, monospace;
 }
 noscript p{
@@ -131,7 +131,7 @@ noscript p{
 <div class="wrap">
 
 <header>
-  <p class="eyebrow">naturalnumbers.org · working notes · august 2026</p>
+  <p class="eyebrow">Interactive Companion · Collatz Map · August 2026</p>
   <h1>The residue graph of the accelerated Collatz map</h1>
   <p class="byline">Michael M. Ross · <a href="mailto:michaelmross@cantab.net">michaelmross@cantab.net</a></p>
   <p class="lede">A finite quotient of the Collatz dynamics, drawn in its own metric. Every node
@@ -216,7 +216,55 @@ residues neighbors on the circle: distance on the circle approximates distance i
 collapses into an undifferentiated chord tangle. The comparison is the point: this object has a
 geometry, and it is not the geometry of the number line.</p>
 
-<h2><span class="s">§4</span>Recurrence, and what finite graphs cannot show</h2>
+<h2><span class="s">§4</span>The spike train</h2>
+<p>There is a second picture, complementary to the circle: plot the exponent
+<code>a(x) = v<sub>2</sub>(3x+1)</code> over consecutive odd <code>x</code>. Families
+<span class="famD">D</span> and <span class="famB">B</span> lay down a baseline of 1s and 2s;
+family <span class="famC">C</span> contributes the isolated tall excursions &mdash; a spike
+train. Its shape is the most familiar object in elementary number theory, the division-by-two
+(&ldquo;ruler&rdquo;) pattern: since <code>x &#8614; 3x+1</code> is a 2-adic isometry, the
+valuation landscape it produces is the classical one, merely shifted in phase. Heights
+<code>&ge; k</code> occupy a single residue class mod <code>2<sup>k</sup></code> and thin out
+dyadically.</p>
+
+<figure>
+<div class="viz">
+  <div class="controls">
+    <label for="start2">start x
+      <input id="start2" type="text" inputmode="numeric" value="1"
+        style="width:110px;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:13px;padding:5px 8px;border:1px solid var(--rule);border-radius:6px;background:var(--paper);color:var(--ink);">
+    </label>
+    <label for="span2">window
+      <select id="span2" aria-label="Window width">
+        <option value="128">128 odds</option>
+        <option value="256" selected>256 odds</option>
+        <option value="512">512 odds</option>
+      </select>
+    </label>
+    <button id="pl2" style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:13px;padding:5px 10px;border:1px solid var(--rule);border-radius:6px;background:var(--paper);color:var(--ink);cursor:pointer;">&#8249;</button>
+    <button id="pr2" style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:13px;padding:5px 10px;border:1px solid var(--rule);border-radius:6px;background:var(--paper);color:var(--ink);cursor:pointer;">&#8250;</button>
+    <span id="stats2" style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:12.5px;color:var(--ink-3);margin-left:auto;"></span>
+  </div>
+  <canvas id="cv2" tabindex="0" role="img"
+    aria-label="Bar chart of the exponent a(x) over consecutive odd integers; hover a bar to inspect it."
+    style="cursor:crosshair"></canvas>
+  <div id="info2">hover a bar &mdash; deep spikes show their half-rotation tower.</div>
+</div>
+<figcaption>The exponent landscape. Hover a spike of height <code>&ge; 5</code> and the
+inspector prints its tower decomposition
+<code>L<sub>c</sub>(n) = 4<sup>j</sup>&middot;L<sub>&sigma;<sup>&minus;j</sup>(c)</sub>(m)</code>.
+The marked spike at <code>x = 53</code> (height 5) is the same object as a 32-edge fan of the
+node 53 in the circle of &sect;2&ndash;3 at <code>M = 7</code>: spike height there is fan
+width here.</figcaption>
+</figure>
+
+<p>The correspondence between the two pictures is exact. A spike of height <code>a</code> in
+this train is, reduced mod <code>2<sup>M</sup></code>, a node of out-degree
+<code>2<sup>a</sup></code> in the graph &mdash; one coset, one arc. Height in one
+representation is width in the other; and the fans are precisely what the deterministic
+shortcut of &sect;5 throws away.</p>
+
+<h2><span class="s">§5</span>Recurrence, and what finite graphs cannot show</h2>
 <p>If <code>G<sub>K,M</sub></code> were acyclic away from the fixed point at 1, bounded-exponent
 Collatz cycles would be excluded. It is nowhere near acyclic. At every modulus tested the graph
 has one giant strongly connected component containing all but a vanishing sliver of nodes
@@ -249,15 +297,15 @@ use: an actual integer's successor residue is only pinned down modulo
 and the sound graph is recurrent. Full statements, proofs, and the wider program are in the
 paper&nbsp;[1].</p>
 
-<h2><span class="s">§5</span>Reproduce it</h2>
+<h2><span class="s">§6</span>Reproduce it</h2>
 <p>Everything on this page is computed in your browser from the definitions above &mdash; the
 graph, the strongly connected components, the layout. The same construction as a standalone
 script, <code>residue_graph.py</code>, lives in the repository&nbsp;[3]; the table reproduces
 with</p>
-<p><code>for M in $(seq 11 20); do python3 residue_graph.py 7 $M; done</code></p>
+<p><code>python3 residue_graph.py --sweep 7 11 20</code></p>
 
 <div class="refs">
-<h2><span class="s">§6</span>References</h2>
+<h2><span class="s">§7</span>References</h2>
 <ol>
 <li>M. M. Ross, <em>Spike structures and 2-adic transition laws in the accelerated Collatz map</em>,
 Zenodo (2026). <a href="https://doi.org/10.5281/zenodo.21049703">doi:10.5281/zenodo.21049703</a></li>
@@ -269,10 +317,9 @@ of three</em>, Zenodo (2026). <a href="https://doi.org/10.5281/zenodo.20545164">
 <a href="https://doi.org/10.6084/m9.figshare.24778536">doi:10.6084/m9.figshare.24778536</a></li>
 <li>D. J. Bernstein, <em>A non-iterative 2-adic statement of the 3n+1 conjecture</em>,
 Proc. Amer. Math. Soc. 121 (1994), 405&ndash;408 &mdash; the 2-adic conjugacy behind the
-recurrence heuristic of §4.</li>
+recurrence heuristic of §5.</li>
 </ol>
 </div>
-
 <footer>Single file, no dependencies, no network. Built with Claude Fable 5.</p></footer>
 
 </div>
@@ -444,6 +491,123 @@ if(window.matchMedia){
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(){loadPal();draw();});
 }
 rebuild();
+})();
+</script>
+<script>
+(function(){
+var cv=document.getElementById('cv2');
+var info=document.getElementById('info2');
+var stats=document.getElementById('stats2');
+function css(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim();}
+var SIG_INV={2:5,5:8,8:2},ROFF={8:0,5:3,2:2},FORM={2:'L2',8:'L8',5:'L5'},SUBN={2:'C1',8:'C2',5:'G'};
+var data=[],hover=-1;
+function v2big(t){var k=0;while(t%2n===0n){t/=2n;k++;}return k;}
+function entry(x){
+  var a=v2big(3n*x+1n),key,c=0;
+  if(x%4n===3n)key='D';
+  else if(x%8n===1n)key='B';
+  else{var m=Number(x%24n);if(m===5){key='C';c=2;}else if(m===21){key='C';c=8;}else{key='C';c=5;}}
+  return{x:x,a:a,key:key,c:c};
+}
+function build(){
+  var raw=(document.getElementById('start2').value||'1').replace(/\D/g,'')||'1';
+  var s=BigInt(raw);
+  if(s<1n)s=1n;
+  if(s%2n===0n)s+=1n;
+  document.getElementById('start2').value=s.toString();
+  var w=parseInt(document.getElementById('span2').value,10);
+  data=[];
+  for(var i=0;i<w;i++)data.push(entry(s+BigInt(2*i)));
+  hover=-1;draw();describe(-1);
+}
+function draw(){
+  var dpr=window.devicePixelRatio||1,W=cv.clientWidth||600,H=Math.max(220,Math.round(W*0.4));
+  cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);cv.style.height=H+'px';
+  var ctx=cv.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,H);
+  var CO={D:css('--fam-d'),B:css('--fam-b'),C:css('--fam-c')};
+  var padL=26,padB=6,padT=8,plotW=W-padL-4,plotH=H-padT-padB;
+  var maxA=3,i;
+  for(i=0;i<data.length;i++)if(data[i].a>maxA)maxA=data[i].a;
+  maxA+=1;
+  var unit=plotH/maxA;
+  ctx.font='10px "IBM Plex Mono",ui-monospace,monospace';
+  ctx.fillStyle=css('--ink-3');ctx.strokeStyle=css('--rule');
+  for(var g=2;g<=maxA;g+=2){
+    var y=H-padB-g*unit;
+    ctx.beginPath();ctx.moveTo(padL,y);ctx.lineTo(W-4,y);ctx.stroke();
+    ctx.fillText(String(g),4,y+3);
+  }
+  var bw=plotW/data.length,barw=Math.max(1,bw-1);
+  for(i=0;i<data.length;i++){
+    var d=data[i];
+    ctx.fillStyle=CO[d.key];
+    ctx.globalAlpha=(hover===i)?1:(d.key==='C'?0.95:0.5);
+    var h=Number(d.a)*unit;
+    ctx.fillRect(padL+i*bw,H-padB-h,barw,h);
+    if(d.x===53n){
+      ctx.globalAlpha=1;ctx.fillStyle=css('--ink');
+      ctx.fillText('53',padL+i*bw-6,H-padB-h-6);
+    }
+  }
+  ctx.globalAlpha=1;
+  var n1=0,n2=0,nC=0;
+  for(i=0;i<data.length;i++){var k=data[i].key;if(k==='D')n1++;else if(k==='B')n2++;else nC++;}
+  stats.textContent=data.length+' bars · D '+n1+' · B '+n2+' · spikes '+nC;
+  cv._bw=bw;cv._padL=padL;
+}
+function tower(d){
+  var c=d.c,con={2:5n,8:21n,5:13n}[c];
+  var n=(d.x-con)/24n;
+  var chain=FORM[c]+'('+n+') = '+(9n*n+BigInt({2:2,8:8,5:5}[c]));
+  var depth=Number(d.a)-3,steps=0,cc=c,nn=n;
+  while(depth>=2){
+    var m=(nn-BigInt(ROFF[cc]))/4n;
+    cc=SIG_INV[cc];nn=m;steps++;depth-=2;
+    chain+=' = 4^'+steps+'\u00b7'+FORM[cc]+'('+nn+')';
+  }
+  return{chain:chain,steps:steps};
+}
+function describe(i){
+  if(i<0){info.innerHTML='hover a bar &mdash; deep spikes show their half-rotation tower.';return;}
+  var d=data[i],head='<b>x = '+d.x+'</b> · a(x) = '+d.a;
+  if(d.key!=='C'){info.innerHTML=head+' · family '+d.key+(d.key==='D'?' (baseline 1)':' (baseline 2)');return;}
+  var t=tower(d);
+  info.innerHTML=head+' · spike, subfamily '+SUBN[d.c]+'\n'+t.chain+(t.steps>0?'   (half-rotation \u00d7'+t.steps+')':'   (depth &lt; 5: no rotation step)');
+}
+function nearest(mx){var i=Math.floor((mx-cv._padL)/cv._bw);return(i>=0&&i<data.length)?i:-1;}
+function pointer(e){
+  var rc=cv.getBoundingClientRect();
+  var px=(e.touches?e.touches[0].clientX:e.clientX)-rc.left;
+  var i=nearest(px);
+  if(i!==hover){hover=i;draw();describe(i);}
+}
+cv.addEventListener('mousemove',pointer);
+cv.addEventListener('touchstart',pointer,{passive:true});
+cv.addEventListener('touchmove',pointer,{passive:true});
+cv.addEventListener('mouseleave',function(){hover=-1;draw();describe(-1);});
+cv.addEventListener('keydown',function(e){
+  if(e.key!=='ArrowRight'&&e.key!=='ArrowLeft')return;
+  e.preventDefault();
+  var s=e.key==='ArrowRight'?1:-1;
+  hover=((hover<0?0:hover)+s+data.length)%data.length;
+  draw();describe(hover);
+});
+document.getElementById('start2').addEventListener('change',build);
+document.getElementById('span2').addEventListener('change',build);
+document.getElementById('pl2').addEventListener('click',function(){
+  var s=BigInt(document.getElementById('start2').value),w=BigInt(document.getElementById('span2').value);
+  s-=2n*w;if(s<1n)s=1n;
+  document.getElementById('start2').value=s.toString();build();
+});
+document.getElementById('pr2').addEventListener('click',function(){
+  var s=BigInt(document.getElementById('start2').value),w=BigInt(document.getElementById('span2').value);
+  document.getElementById('start2').value=(s+2n*w).toString();build();
+});
+window.addEventListener('resize',draw);
+if(window.matchMedia){
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',draw);
+}
+build();
 })();
 </script>
 </body>
