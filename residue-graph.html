@@ -449,7 +449,7 @@ function draw(){
   stats.textContent=G.N+' nodes · '+G.ec.toLocaleString()+' edges · giant SCC '+G.bigsz+'/'+G.N;
 }
 function describe(i){
-  if(i<0){info.innerHTML='Hover over a node &mdash; or focus the circle and use &larr; &rarr; &mdash; to inspect its residue, exponent, and target coset.';return;}
+  if(i<0){info.innerHTML='Hover over a perimeter node &mdash; or focus the circle and use &larr; &rarr; &mdash; to inspect its residue, exponent, and target coset.';return;}
   var r=G.nodes[i],M=G.M;
   if(G.expo[i]<0){
     info.innerHTML='<b>x &equiv; '+r+'</b> = '+bin(r,M)+'&#8322;  (mod 2^'+M+')\n'
