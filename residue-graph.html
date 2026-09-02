@@ -449,7 +449,7 @@ function draw(){
   stats.textContent=G.N+' nodes · '+G.ec.toLocaleString()+' edges · giant SCC '+G.bigsz+'/'+G.N;
 }
 function describe(i){
-  if(i<0){info.innerHTML='hover a node &mdash; or focus the circle and use &larr; &rarr; &mdash; to inspect its residue, exponent, and target coset.';return;}
+  if(i<0){info.innerHTML='Hover over a node &mdash; or focus the circle and use &larr; &rarr; &mdash; to inspect its residue, exponent, and target coset.';return;}
   var r=G.nodes[i],M=G.M;
   if(G.expo[i]<0){
     info.innerHTML='<b>x &equiv; '+r+'</b> = '+bin(r,M)+'&#8322;  (mod 2^'+M+')\n'
@@ -571,7 +571,7 @@ function tower(d){
   return{chain:chain,steps:steps};
 }
 function describe(i){
-  if(i<0){info.innerHTML='hover a bar &mdash; deep spikes show their half-rotation tower.';return;}
+  if(i<0){info.innerHTML='Hover over a bar &mdash; deep spikes show their half-rotation tower.';return;}
   var d=data[i],head='<b>x = '+d.x+'</b> · a(x) = '+d.a;
   if(d.key!=='C'){info.innerHTML=head+' · family '+d.key+(d.key==='D'?' (baseline 1)':' (baseline 2)');return;}
   var t=tower(d);
