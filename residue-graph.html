@@ -197,7 +197,7 @@ which the graph could, in principle, exclude cycles &mdash; if it were acyclic.<
   </div>
   <canvas id="cv" tabindex="0" role="img"
     aria-label="Circular graph of odd residues. Nodes are colored by family and edges fan out to 2-adic cosets. Hover or use arrow keys to inspect a node."></canvas>
-  <div id="info">Hover over a node &mdash; or focus the circle and use &larr; &rarr; &mdash; to inspect its residue, exponent, and target coset.</div>
+  <div id="info">Hover over a perimeter node &mdash; or focus the circle and use &larr; &rarr; &mdash; to inspect its residue, exponent, and target coset.</div>
 </div>
 <figcaption>The graph <code>G<sub>K,M</sub></code> with <code>K = 7</code>
 (<code>max_a = 10</code>). Each node's out-edges land on one 2-adic coset; in bit-reversed
@@ -209,7 +209,7 @@ The same graph can be generated with <code>residue_graph.py</code> from the repo
 below.</p></noscript>
 
 <h2><span class="s">§3</span>Reading the picture</h2>
-<p>Hover any node. A <span class="famD">teal</span> node (family D, <code>a = 1</code>) throws a
+<p>Hover over any node. A <span class="famD">teal</span> node (family D, <code>a = 1</code>) throws a
 tight fan of 2 targets; a <span class="famB">violet</span> node (B, <code>a = 2</code>) a fan of
 4; a <span class="famC">coral</span> spike sprays 8, 16, 32 or more. The inspector under the
 circle shows why: the target residues agree in their low <code>M&minus;a</code> bits and differ
@@ -250,11 +250,11 @@ dyadically.</p>
     <span id="stats2" style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:12.5px;color:var(--ink-3);margin-left:auto;"></span>
   </div>
   <canvas id="cv2" tabindex="0" role="img"
-    aria-label="Bar chart of the exponent a(x) over consecutive odd integers; hover a bar to inspect it."
+    aria-label="Bar chart of the exponent a(x) over consecutive odd integers. Hover over a bar to inspect it."
     style="cursor:crosshair"></canvas>
-  <div id="info2">hover a bar &mdash; deep spikes show their half-rotation tower.</div>
+  <div id="info2">Hover over a bar &mdash; deep spikes show their half-rotation tower.</div>
 </div>
-<figcaption>The exponent landscape. Hover a spike of height <code>&ge; 5</code> and the
+<figcaption>The exponent landscape. Hover over a spike of height <code>&ge; 5</code> and the
 inspector prints its tower decomposition
 <code>L<sub>c</sub>(n) = 4<sup>j</sup>&middot;L<sub>&sigma;<sup>&minus;j</sup>(c)</sub>(m)</code>.
 The marked spike at <code>x = 53</code> (height 5) is the same object as a 32-edge fan of the
