@@ -56,7 +56,7 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
-        h1 { border-bottom: 2px solid #467886; padding-bottom: 10px; color: #2c3e50; }
+        h1 { border-bottom: 2px solid #467886; padding-bottom: 10px; margin-bottom: 12px; color: #2c3e50; }
         h2 { 
 			font-size: 1.2rem; 
 			margin-top: 0; /* <-- Add this to override the browser default */
@@ -75,7 +75,7 @@
         .links { margin-top: 5px; font-size: 0.9rem; }
         a { color: #467886; text-decoration: none; font-weight: bold; }
         a:hover { text-decoration: underline; }
-        .meta-links { background: #f8f9fa; padding: 10px; border-radius: 8px; margin-bottom: 10px; }
+        .meta-links { background: #f8f9fa; padding: 6px 10px; line-height: 1.3; border-radius: 8px; margin-bottom: 10px; }
         .repo-links { background: #ffffff; padding: 10px 15px; border: 1px solid #eee; border-radius: 8px; margin-bottom: 40px; font-size: 0.9rem; }
         .file-link { color: #666; font-weight: normal; margin-left: 15px; }
         .companion-notes {
@@ -98,6 +98,12 @@
             margin-bottom: 4px;
             padding-top: 20px;
             border-top: 1px solid #ccc;
+        }
+        /* First program heading sits directly under the profiles bar: no rule, tight gap */
+        .meta-links + .program-title {
+            margin-top: 12px;
+            padding-top: 0;
+            border-top: none;
         }
         .program-blurb {
             font-style: italic;
@@ -162,9 +168,8 @@
         </div>
 
 		<div class="program-title">Experimental Mathematics</div>
-		
-		 <p style="line-height: 1.6;">			
-		 <ul class="section-list">
+
+		<ul class="section-list">
 			<li class="pub-item">
 			<h2>An Algorithmic Account of Prime Populations Between Prime Squares</h2>
 			<p class="role">Almost all intervals between consecutive prime squares contain at least a fixed positive fraction of the prime count predicted by the prime number theorem, and hence at least four primes. A rolling segmented sieve gives exact counts for 283,146 intervals through 4,000,037<sup>2</sup> ≈ 1.6 x 10<sup>13</sup>. An overlap ledger tracks repeated divisor hits, and a floor-count certificate gives lower bounds without locating individual primes.</p>
@@ -173,7 +178,8 @@
 				<a href="https://github.com/michaelmross/prime-counting">Repo</a>
 			</div>
 		</li>
-		
+		</ul>
+
 		<div class="category-label">Certification Tool</div>
         <ul class="section-list">
 			<li class="pub-item">
@@ -183,7 +189,7 @@
 					<a href="https://github.com/michaelmross/exponent-certificates">Get from Github</a>
 					<a href="https://zenodo.org/records/21986256">About the Tool</a>
 				</div>
-			</li
+			</li>
 		</ul>
 		<div class="category-label">Fermat–Hall Census</div>
 		<ul class="section-list">
@@ -212,8 +218,8 @@
 			</div>
 		</li>
 		</ul>
-		<p style="line-height: 1.6;">			
-		 <ul class="section-list">
+
+		<ul class="section-list">
 			<li class="pub-item">
 			<h2>Multiplication Geometry in Square Shells: Finite Coverage, Truncated Legendre Sums, and the Parity Barrier</h2>
 			<p class="role">The multiplication table inside a square shell almost determines its primes: finite overlap geometry gives sharp deterministic coverage, while an exact product cutoff explains much of the apparent parity obstruction.</p>
@@ -223,7 +229,6 @@
 			</div>
 		</li>
 
-		<ul class="section-list">
 			<li class="pub-item">
 			<h2>The Multiplication Table Near Perfect Squares: Concentration, Typicality, and the Slow Approach to Ford's Exponent</h2>
 			<p class="role">Exact-integer Monte Carlo to N = 2<sup>1024</sup> and a seam-anchored model of factorizations to N = 2<sup>10<sup>18</sup></sup>. The Erdős–Tenenbaum–Ford constant is the true asymptotic exponent, its corrections live on the log log scale, and it is attained at no height that will ever be computed.</p>
@@ -232,6 +237,7 @@
 				<a href="https://github.com/michaelmross/multiplication-table">Repo</a>
 			</div>
 		</li>
+		</ul>
 
 		<div class="category-label">Algebraic Geometry</div>
 		<ul class="section-list">
@@ -242,18 +248,21 @@
 				<a href="https://github.com/michaelmross/jacobian">View on Github</a>
 			</div>
 		</li>
+		</ul>
 
 		<div class="category-label">Iterated Absolute Differences</div>
         <ul class="section-list">
+            <li class="pub-item">
                 <h2>Empirical Structure of the Gilbreath Decay Constants</h2>
                 <p class="role">Exact values of c₄–c₆ and a binary digit-sum decay law for the Gilbreath constants of Chase, Hunter & Tao (arXiv:2607.08712), with Monte Carlo evidence that the growth threshold is exponential rather than linear.</p>
                 <div class="links" style="display: flex; gap: 50px;">
                     <a href="https://zenodo.org/records/21326026">View on Zenodo</a>
                     <a href="https://github.com/michaelmross/Gilbreath">Repo</a>
                 </div>
-				
-        <p class="inline-note">BTW <a class="inline-link" href="https://michaelmross.github.io/gilbreath-parity-note.html">Is Gilbreath’s conjecture garden-variety numerology?</a></p>
-        
+                <p class="inline-note">BTW <a class="inline-link" href="https://michaelmross.github.io/gilbreath-parity-note.html">Is Gilbreath’s conjecture garden-variety numerology?</a></p>
+            </li>
+        </ul>
+
         <div class="category-label">Semiprimes</div>
         <ul class="section-list">
 		<li class="pub-item">
@@ -309,7 +318,7 @@
 					<a class="inline-link" href="within_layer_companion.html">Visual companion</a>
 				</div>
             </li>
-			<p class="inline-note">Supersedes...
+            <li class="inline-note" style="list-style: none;">Supersedes...</li>
             <li class="pub-item">
                 <h2>A Reduction of the Squarefree Coprime Adjacent Divisor Problem and a Conditional Golden-Ratio Lower Bound</h2>
                 <p class="role">A balanced-split identity and Fibonacci layer reduction for Erdős #1100, giving a conditional golden-ratio lower bound g_sf(k) ≥ (φ + o(1))^k that improves the Erdős–Simonovits floor of √2.</p>
@@ -392,8 +401,6 @@
 
         <div class="category-label">Extensions</div>
         <ul class="section-list">
-		
-			<ul class="section-list">
 				<li class="pub-item">
 					<h2>Primes in Square Intervals: A Structural Audit of the Square-Centered Dispersion Route</h2>
 					<p class="role">A structural audit of the square-centered dispersion method shows exactly where the perfect-square geometry survives—and where the analytic route loses traction. The obstruction is not the absence of structure, but the form in which that structure reaches the second-level exponential sum.</p>
@@ -401,7 +408,6 @@
 						<a href="https://zenodo.org/records/23288274">View on Zenodo</a>
 					</div>
 				</li>
-			</ul>
 
             <li class="pub-item">
                 <h2>A Modified Legendre Product for Primes in Consecutive Square Intervals</h2>
@@ -469,27 +475,26 @@
             </li>
         </ul>
 		
-				<div class="category-label">Stat Arb</div>
-        <ul class="section-list">
-			<li class="pub-item featured">
-                <h2>Cost Viability and Cointegration Are Anti-Correlated in Liquid US ETF Pairs</h2>
-                <p class="role">A ground-truth-validated negative result for daily-frequency statistical arbitrage.</p>
-				<div class="links" style="display: flex; gap: 50px;">
-					<a href="https://zenodo.org/records/22059837">View on Zenodo</a>
-					<a href="https://github.com/michaelmross/stat-arb">Repo</a>
-				</div>
-			</li
-		</ul>
-		  <ul class="section-list">
-			<li class="pub-item featured">
-                <h2>Triangular FX Residuals on a Retail Feed Are Real, Measurable, and a Fourteenth of Their Cost</h2>
-                <p class="role">A preregistered census, a rejected thin-cross hypothesis, and three unforced choices.</p>
-				<div class="links" style="display: flex; gap: 50px;">
-					<a href="https://zenodo.org/records/23063281">View on Zenodo</a>
-					<a href="https://github.com/michaelmross/stat-arb/tree/main/FX">Repo</a>
-				</div>
-			</li
-		</ul>
+        <div class="program-title">Statistical Arbitrage Investigation</div>
+
+		<li class="pub-item">
+			<h2>Cost Viability and Cointegration Are Anti-Correlated in Liquid US ETF Pairs</h2>
+			<p class="role">A ground-truth-validated negative result for daily-frequency statistical arbitrage.</p>
+			<div class="links" style="display: flex; gap: 50px;">
+				<a href="https://zenodo.org/records/22059837">View on Zenodo</a>
+				<a href="https://github.com/michaelmross/stat-arb">Repo</a>
+			</div>
+		</li>
+
+
+		<li class="pub-item">
+			<h2>Triangular FX Residuals on a Retail Feed Are Real, Measurable, and a Fourteenth of Their Cost</h2>
+			<p class="role">A preregistered census, a rejected thin-cross hypothesis, and three unforced choices.</p>
+			<div class="links" style="display: flex; gap: 50px;">
+				<a href="https://zenodo.org/records/23063281">View on Zenodo</a>
+				<a href="https://github.com/michaelmross/stat-arb/tree/main/FX">Repo</a>
+			</div>
+		</li>
 
     </div>
 
